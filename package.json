@@ -1,0 +1,27 @@
+{
+  "name": "SWEETnet",
+  "version": "0.0.0",
+  "description": "The support network for the SWEETcam system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lelandmiller/SWEETnet.git"
+  },
+  "author": "Leland Miller",
+  "bugs": {
+    "url": "https://github.com/lelandmiller/SWEETnet/issues"
+  },
+  "homepage": "https://github.com/lelandmiller/SWEETnet",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-groc": "^0.4.5",
+    "grunt-shell-spawn": "^0.3.0"
+  },
+  "dependencies": {
+    "node-uuid": "^1.4.1",
+    "mongoskin": "^1.4.4"
+  }
+}
