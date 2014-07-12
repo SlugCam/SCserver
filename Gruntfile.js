@@ -10,13 +10,13 @@ module.exports = function(grunt) {
                 "*/*.js", "README.md"
             ],
             options: {
-                "out": "doc/"
+                "out": "_www/src/"
             }
         },
 
         shell: {
             mongodb: {
-                command: 'mkdir -p ./data/db; mongod --dbpath ./data/db --port <%= config.db.port %>',
+                command: 'mkdir -p <%= config.db.path %>; mongod --dbpath <%= config.db.path %> --port <%= config.db.port %>',
                 options: {
                     async: false,
                     stdout: true,

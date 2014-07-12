@@ -25,4 +25,4 @@ build/Release
 node_modules
 
 # Data directory, contains database storage etc.
-data
+_data

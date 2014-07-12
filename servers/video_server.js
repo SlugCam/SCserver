@@ -1,15 +1,7 @@
-// # Message Server
+// # video_server.js
 
-// This file contains the code for the SWEETnet message server. It is
-// responsible for coordinating message communication with the cameras. It is
-// the only way to send messages to the cameras, and receives all non-video
-// communication from the cameras. Logically it connects the cameras to the
-// database.
-
-// ## TODO
-// The server will take JSON, one message object per line. JSON strings should
-// be newline escapes (todo check this). Make sure that the data event is
-// emitted after every newline.
+// This file contains the code for the SWEETnet video server. It is responsible
+// for receiving and storing video from the cameras.
 
 module.exports = function(config) {
     var exports = {};
@@ -18,7 +10,7 @@ module.exports = function(config) {
     var net = require('net');
 
     // This is our data store library. It contains the functions we use to store
-    // messages to the database.
+    // videos to the database.
     var db = require('./lib/db.js')(config);
 
     // Build a server object, `net.createServer` creates a server object and sets
@@ -36,9 +28,9 @@ module.exports = function(config) {
 
         // The data event is emitted when data is received.
         c.on('data', function(data) {
-
-            // If this is the first message retrieved, find camera name and start
-            // sending pending messages.
+            console.log(data);
+            // If this is the first video retrieved, find camera name and start
+            // sending pending videos.
         });
 
         c.write('hello\r\n');
@@ -47,13 +39,13 @@ module.exports = function(config) {
     // listen starts the server listening on the given port.
     exports.listen = function(port) {
         server.listen(port, function() {
-            console.log('message server bound to port ' + port);
+            console.log('video server bound to port ' + port);
         });
     };
 
     exports.start = function() {
-        server.listen(config.messageServer.port, function() {
-            console.log('message server bound to port ' + config.messageServer.port);
+        server.listen(config.videoServer.port, function() {
+            console.log('video server bound to port ' + config.videoServer.port);
         });
     };
 

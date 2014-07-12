@@ -4,6 +4,7 @@
 
 var net = require('net');
 var path = require('path');
+var fs = require('fs');
 
 // Constructor creates a bot with a link to the message server at serverHost
 // on port serverPort. Note that serverHost will default to localhost.
@@ -26,21 +27,25 @@ function CamBot(config, name) {
 // (length of string) + 9 bytes long, followed by the data.
 CamBot.prototype.sendVideo = function(filename) {
     filename = path.join(__dirname, 'test_files', filename);
+    var camName = this.name;
     // net.connect port, hostname, listener for connect event
+    console.log('Attempting to send video to ' + this.videoHostname + ':' + this.videoPort);
     var client = net.connect(this.videoPort, this.videoHostname, function() {
-        console.log(this.name + ': connected to video server');
-        var header = new Buffer(this.name.length + 9);
+        console.log(camName + ': connected to video server');
+        var header = new Buffer(camName.length + 9);
         var videobuffer = fs.readFileSync(filename);
 
         // Zero out this new buffer, so we don't worry about adding the null
         // byte after the string later (node doesn't guarantee an empty buffer)
         header.fill(0);
-        header.write(this.name, 'ascii');
-        var cursor = this.name.length + 1;
+        header.write(camName, 'ascii');
+        var cursor = camName.length + 1;
         header.writeUInt32BE(id, cursor);
         cursor += 4;
         header.writeUInt32BE(videobuffer.byteLength(), cursor);
 
+        console.log(header);
+        console.log(videobuffer);
         client.write(header);
         client.write(videobuffer);
         client.end();

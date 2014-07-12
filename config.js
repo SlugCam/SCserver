@@ -1,9 +1,10 @@
 var path = require('path');
-
+var dataDir = '_data';
 module.exports = {
     "db": {
         "port": 7890,
-        "hostname": "localhost"
+        "hostname": "localhost",
+        "path": path.join(__dirname, dataDir, 'db')
     },
     "apiServer": {
         "port": 7891,
@@ -16,6 +17,6 @@ module.exports = {
     "videoServer": {
         "port": 7893,
         "hostname": "localhost",
-        "dataPath": path.join(__dirname, 'data/videos'),
+        "path": path.join(__dirname, dataDir, 'videos')
     }
 };
