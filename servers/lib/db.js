@@ -13,6 +13,9 @@ module.exports = function(config) {
 
     // TODO success/failure callback and verification of input
     exports.storeMessage = function(message) {
+        // Check if camera is registered
+        
+
         db.collection('mstore').insert(message, function(err, result) {
             if (err) throw err;
             if (result) console.log('Added!');
@@ -29,7 +32,7 @@ module.exports = function(config) {
     };
 
     exports.getCameras = function(cb) {
-        db.collection('mstore').distinct('messageSender').toArray(function(err, result) {
+        db.collection('stages').toArray(function(err, result) {
             if (err) throw err;
             cb(result);
         });

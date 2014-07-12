@@ -3,15 +3,59 @@
 // Simulates network activity from a SWEETcam
 
 var net = require('net');
+var path = require('path');
 
 // Constructor creates a bot with a link to the message server at serverHost
 // on port serverPort. Note that serverHost will default to localhost.
 function CamBot(config, name) {
     // Generates a name for this camera
+    this.config = config;
     this.name = name;
-    this.port = config.messageServer.port;
-    this.hostname = config.messageServer.hostname;
+    this.videoPort = config.videoServer.port;
+    this.videoHostname = config.videoServer.hostname;
+    this.messagePort = config.messageServer.port;
+    this.messageHostname = config.messageServer.hostname;
 }
+
+// Format of protocol:
+// - Camera Name (null terminated string)
+// - Video ID (unsigned 32 int)
+// - Video Length (unsigned 32 int)
+// - Data
+// This means we have a header that is the (length of string + 1) + 4 + 4 =
+// (length of string) + 9 bytes long, followed by the data.
+CamBot.prototype.sendVideo = function(filename) {
+    filename = path.join(__dirname, 'test_files', filename);
+    // net.connect port, hostname, listener for connect event
+    var client = net.connect(this.videoPort, this.videoHostname, function() {
+        console.log(this.name + ': connected to video server');
+        var header = new Buffer(this.name.length + 9);
+        var videobuffer = fs.readFileSync(filename);
+
+        // Zero out this new buffer, so we don't worry about adding the null
+        // byte after the string later (node doesn't guarantee an empty buffer)
+        header.fill(0);
+        header.write(this.name, 'ascii');
+        var cursor = this.name.length + 1;
+        header.writeUInt32BE(id, cursor);
+        cursor += 4;
+        header.writeUInt32BE(videobuffer.byteLength(), cursor);
+
+        client.write(header);
+        client.write(videobuffer);
+        client.end();
+    });
+
+    client.on('data', function(data) {
+        console.log(data.toString());
+        client.end();
+    });
+
+    client.on('end', function() {
+        console.log('client disconnected');
+    });
+
+};
 
 CamBot.prototype.ping = function(count, delay) {
     var me = this;
@@ -32,7 +76,7 @@ CamBot.prototype.ping = function(count, delay) {
 // specified at bot creation time.
 CamBot.prototype.send = function(objectArray) {
     // net.connect port, hostname, listener for connect event
-    var client = net.connect(this.port, this.hostname, function() {
+    var client = net.connect(this.messagePort, this.messageHostname, function() {
         console.log(this.name + ': connected to message server');
         objectArray.forEach(function(val) {
             client.write(JSON.stringify(val) + '\r\n');

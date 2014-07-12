@@ -2,6 +2,10 @@
 
 The network software behind the SWEETcam system.
 
+## Usage
+
+Configuration file can either be json or js.
+
 ## Development
 
 npm is used for package management. To install all project dependencies locally
