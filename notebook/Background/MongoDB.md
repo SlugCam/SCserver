@@ -1,0 +1,1 @@
+Using MongoDB during initial phases because it allows us to change our data structure very fluidly while protocols and data structures are being developed.
