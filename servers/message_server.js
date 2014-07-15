@@ -22,6 +22,8 @@ module.exports = function(config) {
     // messages to the database.
     var db = require('./lib/db.js')(config);
 
+    var parseFirstJSON = require('./lib/json_parse_raw.js').parseFirstJSON;
+
     // Build a server object, `net.createServer` creates a server object and sets
     // the function to be the listener for the `connection` event. This function
     // receives as an argument a connection object which is an instance of
