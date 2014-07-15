@@ -45,5 +45,7 @@ SWEETrepl.context.help = function () {
     console.log('\nEach of these has a listen and start method. The listen method takes a port as');
     console.log('argument and starts the server. The start method starts the server an the port');
     console.log('as given in the configuration file.');
+    console.log('\nb1, b2, b3, b4 are preconstructed bots for testing.');
+    console.log('\nTab complete can be used to explore methods on these objects.');
     console.log('================================================================================'.rainbow);
 };
