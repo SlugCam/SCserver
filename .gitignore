@@ -26,3 +26,4 @@ node_modules
 
 # Data directory, contains database storage etc.
 _data
+_www
