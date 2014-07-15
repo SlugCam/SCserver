@@ -3,7 +3,8 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        config: grunt.file.readJSON('config.json'),
+        //config: grunt.file.readJSON('config.json'),
+        config: require('./config'),
 
         groc: {
             javascript: [
