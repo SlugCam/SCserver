@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"><head><title>Gruntfile</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="Gruntfile"><meta name="groc-project-path" content="Gruntfile.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">Gruntfile.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Project configuration.</p></div></div><div class="code"><div class="wrapper">    <span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
+        <span class="nx">pkg</span><span class="o">:</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">readJSON</span><span class="p">(</span><span class="s1">&#39;package.json&#39;</span><span class="p">),</span>
+        <span class="c1">//config: grunt.file.readJSON(&#39;config.json&#39;),</span>
+        <span class="nx">config</span><span class="o">:</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./config&#39;</span><span class="p">),</span>
+
+        <span class="nx">groc</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">javascript</span><span class="o">:</span> <span class="p">[</span>
+                <span class="s2">&quot;*.js&quot;</span><span class="p">,</span> <span class="s2">&quot;servers/**/*.js&quot;</span><span class="p">,</span> <span class="s2">&quot;testing/**/*.js&quot;</span><span class="p">,</span> <span class="s2">&quot;util/**/*.js&quot;</span><span class="p">,</span> <span class="s2">&quot;README.md&quot;</span>
+            <span class="p">],</span>
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                <span class="s2">&quot;out&quot;</span><span class="o">:</span> <span class="s2">&quot;_www/src/&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+
+        <span class="nx">shell</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">mongodb</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">command</span><span class="o">:</span> <span class="s1">&#39;mkdir -p &lt;%= config.db.path %&gt;; mongod --dbpath &lt;%= config.db.path %&gt; --port &lt;%= config.db.port %&gt;&#39;</span><span class="p">,</span>
+                <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">async</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                    <span class="nx">stdout</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">stderr</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">failOnError</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">execOptions</span><span class="o">:</span> <span class="p">{</span>
+                        <span class="nx">cwd</span><span class="o">:</span> <span class="s1">&#39;.&#39;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-groc&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-shell-spawn&#39;</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Default task(s).</p></div></div><div class="code"><div class="wrapper">    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="s1">&#39;Generate documentation.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;groc&#39;</span><span class="p">]);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;doc&#39;</span><span class="p">]);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="s1">&#39;Start the Mongo database.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;shell:mongodb&#39;</span><span class="p">]);</span>
+
+
+<span class="p">};</span></div></div></div></div></body></html>

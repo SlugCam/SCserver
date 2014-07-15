@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
         groc: {
             javascript: [
-                "*/*.js", "README.md"
+                "*.js", "servers/**/*.js", "testing/**/*.js", "util/**/*.js", "README.md"
             ],
             options: {
                 "out": "_www/src/"

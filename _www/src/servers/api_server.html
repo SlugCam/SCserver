@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"><head><title>servers/api_server</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="servers/api_server"><meta name="groc-project-path" content="servers/api_server.js"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">servers/api_server.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="api-serverjs">api_server.js</h1>
+
+<p>Contains the server for the external facing http server that application
+programmers can interface with.</p></div></div><div class="code"><div class="wrapper"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">exports</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">db</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./lib/db.js&#39;</span><span class="p">)(</span><span class="nx">config</span><span class="p">);</span>
+
+    <span class="nx">routes</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">uri</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">pathname</span><span class="p">;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;api server: request for &#39;</span> <span class="o">+</span> <span class="nx">uri</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">routes</span><span class="p">[</span><span class="nx">uri</span><span class="p">])</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>http://www.ietf.org/rfc/rfc4627.txt</p></div></div><div class="code"><div class="wrapper">            <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span>
+                <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">:</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">:</span> <span class="s1">&#39;GET,PUT,POST,DELETE,OPTIONS&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="o">:</span> <span class="s1">&#39;Content-Type, Authorization, Content-Length, X-Requested-With&#39;</span>
+            <span class="p">});</span>
+
+            <span class="nx">routes</span><span class="p">[</span><span class="nx">uri</span><span class="p">](</span><span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">object</span><span class="p">));</span>
+            <span class="p">});</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="p">{</span>
+                <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/html&#39;</span>
+            <span class="p">});</span>
+            <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;404: Resource not found&lt;/h1&gt;&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">routes</span><span class="p">[</span><span class="s1">&#39;/dump&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">getMessages</span><span class="p">;</span>
+    <span class="nx">routes</span><span class="p">[</span><span class="s1">&#39;/cameras&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">getCameras</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Starts the server on the port number of the argument</p></div></div><div class="code"><div class="wrapper">    <span class="nx">exports</span><span class="p">.</span><span class="nx">listen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">port</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;api server bound to port &#39;</span> <span class="o">+</span> <span class="nx">port</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Starts the server on the port number given by the configuration file</p></div></div><div class="code"><div class="wrapper">    <span class="nx">exports</span><span class="p">.</span><span class="nx">start</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">apiServer</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;api server bound to port &#39;</span> <span class="o">+</span> <span class="nx">config</span><span class="p">.</span><span class="nx">apiServer</span><span class="p">.</span><span class="nx">port</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">};</span>
+
+    <span class="k">return</span> <span class="nx">exports</span><span class="p">;</span>
+<span class="p">};</span></div></div></div></div></body></html>

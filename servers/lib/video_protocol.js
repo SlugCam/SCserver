@@ -1,3 +1,9 @@
+// video_protocol.js
+// =================
+//
+// This file contains a writable stream that reads a TCP stream and parses our
+// video transfer protocol.
+
 var Writable = require('stream').Writable;
 var util = require('util');
 var fs = require('fs');
@@ -91,7 +97,10 @@ VideoProtocol.prototype._scan = function() {
     if (continueScan) {
         this.fileStream.write(this.buff);
         // Everything is setup, so just write to the file stream
+        // TODO Check if this length is done
     }
+
+    // TODO Check for the stream being finished
 
 
     //TODO remove else, check for continue to new video

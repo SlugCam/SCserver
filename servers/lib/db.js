@@ -1,9 +1,10 @@
-// # db.js
-
+// db.js
+// =====
+//
 // This file contains the data store API. This can be used by all the servers
 // to help isolate database specific code from the server protocol 
 // implementation.
-
+//
 // Currently this library uses mongo through the mongoskin library.
 
 module.exports = function(config) {

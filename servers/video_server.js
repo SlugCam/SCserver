@@ -1,9 +1,11 @@
-// # video_server.js
-
+// video_server.js
+// ===============
+//
 // This file contains the code for the SWEETnet video server. It is responsible
 // for receiving and storing video from the cameras.
-
+//
 // Format of protocol:
+//
 // - Camera Name (null terminated string)
 // - Video ID (unsigned 32 int)
 // - Video Length (unsigned 32 int)
@@ -26,6 +28,7 @@ module.exports = function(config) {
     // `net.Socket`.
     var server = net.createServer(function(c) { //'connection' listener
         console.log('video server connected');
+        
         // TODO make sure the path exists
         c.pipe(new VideoProtocol(config.videoServer.path));
 

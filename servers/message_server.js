@@ -1,5 +1,6 @@
-// # Message Server
-
+// message_server.js
+// =================
+//
 // This file contains the code for the SWEETnet message server. It is
 // responsible for coordinating message communication with the cameras. It is
 // the only way to send messages to the cameras, and receives all non-video
