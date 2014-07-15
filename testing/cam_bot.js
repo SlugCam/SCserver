@@ -28,6 +28,7 @@ function CamBot(config, name) {
 CamBot.prototype.sendVideo = function(filename) {
     filename = path.join(__dirname, 'test_files', filename);
     var camName = this.name;
+    var id = 123;
     // net.connect port, hostname, listener for connect event
     console.log('Attempting to send video to ' + this.videoHostname + ':' + this.videoPort);
     var client = net.connect(this.videoPort, this.videoHostname, function() {
@@ -42,7 +43,7 @@ CamBot.prototype.sendVideo = function(filename) {
         var cursor = camName.length + 1;
         header.writeUInt32BE(id, cursor);
         cursor += 4;
-        header.writeUInt32BE(videobuffer.byteLength(), cursor);
+        header.writeUInt32BE(videobuffer.length, cursor);
 
         console.log(header);
         console.log(videobuffer);
