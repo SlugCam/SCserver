@@ -20,9 +20,7 @@ module.exports = function(config) {
 
     // This is our data store library. It contains the functions we use to store
     // messages to the database.
-    var db = require('./lib/db.js')(config);
-
-    var parseFirstJSON = require('./lib/json_parse_raw.js').parseFirstJSON;
+    var db = require('../lib/db.js')(config);
 
     // Build a server object, `net.createServer` creates a server object and sets
     // the function to be the listener for the `connection` event. This function
