@@ -10,6 +10,11 @@ angular.module('myApp.controllers', [])
             $http.get(baseUrl + 'dump').success(function(data) {
                 $scope.messages = data;
             });
+            window.setInterval(function() {
+                $http.get(baseUrl + 'dump').success(function(data) {
+                    $scope.messages = data;
+                });
+            }, 2000);
 
 
 
