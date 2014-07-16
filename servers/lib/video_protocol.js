@@ -44,10 +44,11 @@ function VideoProtocol(outputPath) {
 // will automatically call this when things are piped to the stream.
 VideoProtocol.prototype._write = function(chunk, encoding, callback) {
     var that = this;
-    // TODO: I believe this concat will "reset" the slices, eliminating need
+    // TODO I believe this concat will "reset" the slices, eliminating need
     // for further processing. This should be checked however.
     this.buff = Buffer.concat([this.buff, chunk]);
     this._scan.call(that);
+    // TODO Need to call callback
 };
 
 // `_scan` contains the bulk of the work, it scans through the current

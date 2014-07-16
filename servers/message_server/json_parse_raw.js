@@ -105,7 +105,7 @@ var json_parse_raw = (function() {
     },
 
     next = function(c) {
-
+      var m;
       // If a c parameter is provided, verify that it matches the current character.
       if (c && c !== ch) {
         m = ("Expected '" + c + "' instead of '" + ch + "'");
