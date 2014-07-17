@@ -21,6 +21,9 @@ module.exports = function(config) {
     // This is our data store library. It contains the functions we use to store
     // messages to the database.
     var db = require('../lib/db.js')(config);
+    var fs = require('fs');
+
+    var JSONParseStream = require('./json_parse_stream').JSONParseStream;
 
     // Build a server object, `net.createServer` creates a server object and sets
     // the function to be the listener for the `connection` event. This function
@@ -28,23 +31,40 @@ module.exports = function(config) {
     // `net.Socket`.
     var server = net.createServer(function(c) { //'connection' listener
         console.log('message server connected');
-
+        c.pipe(new JSONParseStream())
+            .on('data', function(data) {
+                console.log('Object Received');
+                console.log(data);
+                db.storeMessage(data);
+                
+                // Send test ack, should be on callback from db
+                var ack = JSON.stringify({
+                    id: 0,
+                    time: Math.floor((new Date()).getTime() / 1000),
+                    type: 'ack',
+                    data: null,
+                    ack: [data.id]
+                }) + '\r\n';
+                c.write(ack);
+                console.log(ack);
+            });
+        c.pipe(fs.createWriteStream('incoming.log'));
+        
         // The end event is emitted by the connection when the connection is
         // disconnected.
         c.on('end', function() {
             console.log('message server disconnected');
         });
 
+
+        /*
         // The data event is emitted when data is received.
         c.on('data', function(data) {
-            console.log(JSON.parse(data));
-            db.storeMessage(JSON.parse(data));
-
+            console.log(data.toString());
             // If this is the first message retrieved, find camera name and start
             // sending pending messages.
-        });
+        });*/
 
-        c.write('hello\r\n');
     });
 
     // listen starts the server listening on the given port.

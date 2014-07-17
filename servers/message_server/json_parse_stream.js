@@ -22,8 +22,14 @@ function SimpleProtocol(options) {
     this._buffer = '';
 }
 
-SimpleProtocol.prototype._transform = function(chunk, encoding, done) {
+SimpleProtocol.prototype._transform = function (chunk, encoding, done) {
     // TODO Could be problematic?
+    console.log(chunk);
+    if (chunk.toString() === '*HELLO*') {
+        console.log('Removed hello message');
+        done();
+        return;
+    }
     this._buffer += chunk.toString();
     while (true) {
         var parseResults = parseFirstJSON(this._buffer);
