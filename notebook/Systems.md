@@ -1,5 +1,50 @@
 
 ```dot*
+graph G {
+
+    subgraph cluster_cams {
+    	style=filled;
+		color=lightgrey;
+		node [style=filled,color=white];
+		
+		cam1[label="SWEETcam"];
+				
+		label = "Cameras";
+	}
+    
+        # Camera connections
+    cam1 -- messageServer;
+    cam1 -- videoServer;
+
+    
+    db [style=filled,color=lightblue,label="Data Storage"];
+
+
+
+
+    
+    # Servers
+    apiServer[label="API Server"];
+    videoServer[label="Video Server"];
+    messageServer[label="Message Server"];
+    
+    messageServer -- db;
+
+
+    # Video
+
+    videoServer--db
+
+    apiServer--db;
+    apiServer--webClient;
+  
+
+    webClient[label="Web Client"];
+
+}
+```
+
+```dot*
 digraph G {
 
     subgraph cluster_cams {
