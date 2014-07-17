@@ -68,9 +68,11 @@ CamBot.prototype.ping = function(count, delay) {
     delay = delay || 5000;
     if (!count) return;
     this.send([{
-        messageSender: this.name,
-        messageType: 'ping',
-        content: 'ping...'
+        id: 0,
+        cam: this.name,
+        time: Math.floor((new Date()).getTime() / 1000),
+        type: 'ping',
+        data: {}
     }]);
 
     setTimeout(function() {
