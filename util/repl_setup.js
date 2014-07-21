@@ -11,6 +11,8 @@ var messageServer = require('./servers/message_server');
 var apiServer = require('./servers/api_server');
 var videoServer = require('./servers/video_server');
 
+require('./servers/lib/db').setConfig(config);
+
 var b1 = bot.create('b1');
 var b2 = bot.create('b2');
 var b3 = bot.create('b3');
@@ -21,9 +23,9 @@ messageServer.start = function () {
 };
 
 videoServer.start = function () {
-    this.listen(config.messageServer.port);
+    this.listen(config.videoServer.port);
 };
 
-messageServer.start = function () {
-    this.listen(config.messageServer.port);
+apiServer.start = function () {
+    this.listen(config.apiServer.port);
 };
