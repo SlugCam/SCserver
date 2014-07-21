@@ -7,37 +7,35 @@
 //
 // Currently this library uses mongo through the mongoskin library.
 
-module.exports = function(config) {
-    var exports = {},
-        dbPath = 'mongodb://' + config.db.hostname + ':' + config.db.port,
-        db = require('mongoskin').db(dbPath + '/SWEETnet');
+var db;
 
-    // TODO success/failure callback and verification of input
-    exports.storeMessage = function(message) {
-        // Check if camera is registered
-        
+exports.setConfig = function(config) {
+    dbPath = 'mongodb://' + config.db.hostname + ':' + config.db.port;
+    db = require('mongoskin').db(dbPath + '/SWEETnet');
+};
 
-        db.collection('mstore').insert(message, function(err, result) {
-            if (err) throw err;
-            if (result) console.log('Added!');
-        });
-    };
 
-    // Returns an array of all messages
-    exports.getMessages = function(cb) {
-        db.collection('mstore').find().toArray(function(err, result) {
-            if (err) throw err;
-            console.log(result);
-            cb(result);
-        });
-    };
+// TODO success/failure callback and verification of input
+exports.storeMessage = function(message) {
+    // Check if camera is registered
+    db.collection('mstore').insert(message, function(err, result) {
+        if (err) throw err;
+        if (result) console.log('Added!');
+    });
+};
 
-    exports.getCameras = function(cb) {
-        db.collection('stages').toArray(function(err, result) {
-            if (err) throw err;
-            cb(result);
-        });
-    };
+// Returns an array of all messages
+exports.getMessages = function(cb) {
+    db.collection('mstore').find().toArray(function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        cb(result);
+    });
+};
 
-    return exports;
+exports.getCameras = function(cb) {
+    db.collection('stages').toArray(function(err, result) {
+        if (err) throw err;
+        cb(result);
+    });
 };
