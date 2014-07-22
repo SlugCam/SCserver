@@ -19,3 +19,9 @@ install grunt-cli globally on your system, run `npm install -g grunt-cli`.
 
 - node-uuid is used in testing for unique camera names to be generated.
 - mongo is required, available in homebrew and other package managers.
+
+Note that for growl to work on OSX for testing
+
+```sh
+sudo gem install terminal-notifier
+```
