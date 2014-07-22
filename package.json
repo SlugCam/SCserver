@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "mongoskin": "^1.4.4",
-    "colors": "^0.6.2"
+    "colors": "^0.6.2",
+    "has-ansi": "^0.1.0"
   }
 }
