@@ -43,10 +43,11 @@ var server = net.createServer(function(c) { //'connection' listener
                 data: null,
                 ack: [data.id]
             }) + '\r\n';
+
             c.write(ack);
             console.log(ack);
         });
-    c.pipe(fs.createWriteStream('incoming.log'));
+    //c.pipe(fs.createWriteStream('incoming.log'));
 
     // The end event is emitted by the connection when the connection is
     // disconnected.
