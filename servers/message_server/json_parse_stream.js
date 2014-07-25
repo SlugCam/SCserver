@@ -9,9 +9,9 @@ var parseFirstJSON = require('./json_parse_raw').parseFirstJSON;
 
 util.inherits(SimpleProtocol, Transform);
 
-function SimpleProtocol(options) {
+function SimpleProtocol() {
     if (!(this instanceof SimpleProtocol)) {
-        return new SimpleProtocol(options);
+        return new SimpleProtocol();
     }
 
     Transform.call(this);
@@ -24,9 +24,9 @@ function SimpleProtocol(options) {
 
 SimpleProtocol.prototype._transform = function (chunk, encoding, done) {
     // TODO Could be problematic?
-    console.log(chunk);
+    //console.log(chunk);
     if (chunk.toString() === '*HELLO*') {
-        console.log('Removed hello message');
+        //console.log('Removed hello message');
         done();
         return;
     }
@@ -43,9 +43,3 @@ SimpleProtocol.prototype._transform = function (chunk, encoding, done) {
 };
 
 exports.JSONParseStream = SimpleProtocol;
-
-// Usage:
-// var parser = new SimpleProtocol();
-// source.pipe(parser)
-// Now parser is a readable stream that will emit 'header'
-// with the parsed header data.
