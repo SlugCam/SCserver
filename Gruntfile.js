@@ -6,7 +6,6 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        config: config,
 
         groc: {
             javascript: [
@@ -17,47 +16,32 @@ module.exports = function(grunt) {
             }
         },
 
-        shell: {
-            mongodb: {
-                command: 'mkdir -p <%= config.db.path %>; mongod --dbpath <%= config.db.path %> --port <%= config.db.port %>',
-                options: {
-                    async: false,
-                    stdout: true,
-                    stderr: true,
-                    failOnError: true,
-                    execOptions: {
-                        cwd: '.'
-                    }
-                }
+        mongobin: {
+            start: {
+                task: 'mongod',
+                port: config.db.port,
+                dbpath: config.db.path
             },
-            watchTests: {
-                command: 'mocha --compilers coffee:coffee-script/register -w -G',
-                options: {
-                    async: false,
-                    stdout: true,
-                    stderr: true,
-                    failOnError: true,
-                    execOptions: {
-                        cwd: '.'
-                    }
-                }
-            }
         },
+
         mochaTest: {
             all: {
                 options: {
                     reporter: 'spec',
-                    require: 'coffee-script/register',
-                    //growl: true
+                    require: [
+                        'coffee-script/register',
+                        'should'
+                    ],
                 },
                 src: ['test/**/*.coffee']
             }
-        }
+        },
     });
 
     grunt.loadNpmTasks('grunt-groc');
-    grunt.loadNpmTasks('grunt-shell-spawn');
     grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-mongo-bin');
+    grunt.loadNpmTasks('grunt-concurrent');
 
     grunt.registerTask('start-servers', 'Start the SWEETnet servers.',
         function() {
@@ -67,20 +51,18 @@ module.exports = function(grunt) {
             require('./servers/lib/db').setConfig(config);
 
             messageServer.listen(config.messageServer.port);
-            messageServer.listen(config.messageServer.port);
-            messageServer.listen(config.messageServer.port);
-        });
+            apiServer.listen(config.apiServer.port);
+            videoServer.listen(config.videoServer.port);
 
-    // Default task(s).
-    grunt.registerTask('doc', 'Generate documentation.', ['groc']);
-    grunt.registerTask('default', ['doc']);
-    grunt.registerTask('db', 'Start the Mongo database.', ['shell:mongodb']);
+        });
+    grunt.registerTask('db', 'Start the Mongo database.', ['mongobin:start']);
 
     // db comes after, it will hold the process open because it is set to async,
     // kind of hacky, but it works for now.
-    grunt.registerTask('start', 'Starts SWEETnet from the ground up.', ['start-servers', 'db']);
+    grunt.registerTask('start', 'Starts SWEETnet from the ground up.', ['concurrent:startenv']);
 
-    grunt.registerTask('test-watch', 'Watch the mocha tests.', ['shell:watchTests']);
+    grunt.registerTask('doc', 'Generate documentation.', ['groc']);
     grunt.registerTask('test', 'Run the mocha tests', ['mochaTest']);
 
+    grunt.registerTask('default', ['doc']);
 };

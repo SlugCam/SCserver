@@ -2,7 +2,7 @@ var path = require('path');
 var dataDir = '_data';
 module.exports = {
     "db": {
-        "port": 7880,
+        "port": 7870,
         "hostname": "localhost",
         "path": path.join(__dirname, dataDir, 'db')
     },
