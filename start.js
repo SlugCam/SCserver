@@ -38,6 +38,5 @@ videoServer.listen(config.videoServer.port, bunyan.createLogger({
 cd('webapp');
 
 exec('npm start', {
-    async: true,
-    silent: true
+    async: true
 });
