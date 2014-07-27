@@ -31,6 +31,8 @@
     "strip-ansi": "^0.3.0",
     "grunt-mongo-bin": "^0.1.0",
     "shelljs": "^0.3.0",
-    "bunyan": "^0.23.1"
+    "bunyan": "^0.23.1",
+    "serve-static": "^1.4.1",
+    "finalhandler": "^0.1.0"
   }
 }

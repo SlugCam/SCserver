@@ -1,10 +1,13 @@
 require('shelljs/global');
 
-var config = require('./config');
-var messageServer = require('./servers/message_server');
-var apiServer = require('./servers/api_server');
-var videoServer = require('./servers/video_server');
-var bunyan = require('bunyan');
+var config = require('./config'),
+    messageServer = require('./servers/message_server'),
+    apiServer = require('./servers/api_server'),
+    videoServer = require('./servers/video_server'),
+    bunyan = require('bunyan'),
+    serveStatic = require('serve-static'),
+    finalhandler = require('finalhandler'),
+    http = require('http');
 
 exec('mongod --dbpath ' + config.db.path + ' --port ' + config.db.port, {
     async: true,
@@ -35,8 +38,14 @@ videoServer.listen(config.videoServer.port, bunyan.createLogger({
 }));
 
 
-cd('webapp');
+// Serve up public/ftp folder
+var serve = serveStatic('webapp/app', {'index': ['index.html', 'index.htm']});
 
-exec('npm start', {
-    async: true
+// Create server
+var server = http.createServer(function(req, res){
+  var done = finalhandler(req, res);
+  serve(req, res, done);
 });
+
+// Listen
+server.listen(8000);
