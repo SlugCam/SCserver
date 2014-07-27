@@ -15,24 +15,26 @@
 
 // We use the Node.js `net` library to facilitate TCP communication.
 var net = require('net');
+var fs = require('fs');
 
 // This is our data store library. It contains the functions we use to store
 // messages to the database.
 var db = require('../lib/db.js');
-var fs = require('fs');
 
+// This is our custom JSON stream parser.
 var JSONParseStream = require('./json_parse_stream').JSONParseStream;
+var log;
 
 // Build a server object, `net.createServer` creates a server object and sets
 // the function to be the listener for the `connection` event. This function
 // receives as an argument a connection object which is an instance of
 // `net.Socket`.
-var server = net.createServer(function(c) { //'connection' listener
-    console.log('message server connected');
+var server = net.createServer(function(c) { // 'connection' listener
+    log.info('server connected');
     c.pipe(new JSONParseStream())
         .on('data', function(data) {
-            console.log('Object Received');
-            console.log(data);
+            log.info('object received');
+            log.trace(data);
             db.storeMessage(data);
 
             // Send test ack, should be on callback from db
@@ -45,31 +47,28 @@ var server = net.createServer(function(c) { //'connection' listener
             }) + '\r\n';
 
             c.write(ack);
-            console.log(ack);
+            log.trace(ack);
         });
     //c.pipe(fs.createWriteStream('incoming.log'));
 
     // The end event is emitted by the connection when the connection is
     // disconnected.
     c.on('end', function() {
-        console.log('message server disconnected');
+        log.info('server disconnected');
     });
-
-
-    /*
-        // The data event is emitted when data is received.
-        c.on('data', function(data) {
-            console.log(data.toString());
-            // If this is the first message retrieved, find camera name and start
-            // sending pending messages.
-        });*/
 
 });
 
+
 // listen starts the server listening on the given port.
-exports.listen = function(port) {
+exports.listen = function(port, logger) {
+    if (!logger) {
+        console.error('message_server: requires a log object');
+        return;
+    }
+    log = logger;
     server.listen(port, function() {
-        console.log('message server bound to port ' + port);
+        log.info('server bound to port ' + port);
     });
 };
 

@@ -8,10 +8,12 @@
 // Currently this library uses mongo through the mongoskin library.
 
 var db;
+var log;
 
-exports.setConfig = function(config) {
+exports.setConfig = function(config, logger) {
     dbPath = 'mongodb://' + config.db.hostname + ':' + config.db.port;
     db = require('mongoskin').db(dbPath + '/SWEETnet');
+    log = logger;
 };
 
 
@@ -20,7 +22,7 @@ exports.storeMessage = function(message) {
     // Check if camera is registered
     db.collection('mstore').insert(message, function(err, result) {
         if (err) throw err;
-        if (result) console.log('Added!');
+        if (result) log.trace('message store successful');
     });
 };
 
@@ -28,7 +30,7 @@ exports.storeMessage = function(message) {
 exports.getMessages = function(cb) {
     db.collection('mstore').find().toArray(function(err, result) {
         if (err) throw err;
-        console.log(result);
+        log.trace('get messages success');
         cb(result);
     });
 };

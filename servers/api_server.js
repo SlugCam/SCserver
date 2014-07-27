@@ -7,12 +7,13 @@
 var http = require('http');
 var url = require('url');
 var db = require('./lib/db');
+var log = null;
 
 routes = {};
 
 var server = http.createServer(function(req, res) {
     var uri = url.parse(req.url).pathname;
-    console.log('api server: request for ' + uri);
+    log.info('request for ' + uri);
     if (routes[uri]) {
         // http://www.ietf.org/rfc/rfc4627.txt
         res.writeHead(200, {
@@ -37,15 +38,13 @@ routes['/dump'] = db.getMessages;
 routes['/cameras'] = db.getCameras;
 
 // Starts the server on the port number of the argument
-exports.listen = function(port) {
+exports.listen = function(port, logger) {
+    if (!logger) {
+        console.error('api_server: requires a log object');
+        return;
+    }
+    log = logger;
     server.listen(port, function() {
-        console.log('api server bound to port ' + port);
-    });
-};
-
-// Starts the server on the port number given by the configuration file
-exports.start = function() {
-    server.listen(config.apiServer.port, function() {
-        console.log('api server bound to port ' + config.apiServer.port);
+        log.info('server bound to port ' + port);
     });
 };

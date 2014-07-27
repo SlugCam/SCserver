@@ -10,6 +10,7 @@ var bot = require('./testing/cam_bot')(config);
 var messageServer = require('./servers/message_server');
 var apiServer = require('./servers/api_server');
 var videoServer = require('./servers/video_server');
+var log = require('bunyan').createLogger({name: "repl"});
 
 require('./servers/lib/db').setConfig(config);
 
@@ -19,13 +20,13 @@ var b3 = bot.create('b3');
 var b4 = bot.create('b4');
 
 messageServer.start = function () {
-    this.listen(config.messageServer.port);
+    this.listen(config.messageServer.port, log);
 };
 
 videoServer.start = function () {
-    this.listen(config.videoServer.port);
+    this.listen(config.videoServer.port, log);
 };
 
 apiServer.start = function () {
-    this.listen(config.apiServer.port);
+    this.listen(config.apiServer.port, log);
 };

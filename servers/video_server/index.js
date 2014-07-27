@@ -15,6 +15,7 @@
 // We use the Node.js `net` library to facilitate TCP communication.
 var net = require('net');
 var VideoProtocol = require('./video_protocol').VideoProtocol;
+var log;
 
 // This is our data store library. It contains the functions we use to store
 // videos to the database.
@@ -25,21 +26,26 @@ var VideoProtocol = require('./video_protocol').VideoProtocol;
 // receives as an argument a connection object which is an instance of
 // `net.Socket`.
 var server = net.createServer(function(c) { //'connection' listener
-    console.log('video server connected');
+    log.info('server connected');
 
     // TODO make sure the path exists
     c.pipe(new VideoProtocol(config.videoServer.path));
 
     c.on('end', function() {
-        console.log('video server disconnected');
+        log.info('server disconnected');
     });
 
 });
 
 // listen starts the server listening on the given port.
-exports.listen = function(port) {
+exports.listen = function(port, logger) {
+    if (!logger) {
+        console.error('video_server: requires a log object');
+        return;
+    }
+    log = logger;
     server.listen(port, function() {
-        console.log('video server bound to port ' + port);
+        log.info('server bound to port ' + port);
     });
 };
 

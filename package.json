@@ -4,7 +4,7 @@
   "description": "The support network for the SWEETcam system",
   "main": "index.js",
   "scripts": {
-    "start": "node start.js",
+    "start": "node start.js | bunyan -l 20 -o short",
     "repl": "node repl.js",
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --require should"
   },
@@ -30,6 +30,7 @@
     "has-ansi": "^0.1.0",
     "strip-ansi": "^0.3.0",
     "grunt-mongo-bin": "^0.1.0",
-    "shelljs": "^0.3.0"
+    "shelljs": "^0.3.0",
+    "bunyan": "^0.23.1"
   }
 }
