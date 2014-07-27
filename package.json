@@ -33,6 +33,7 @@
     "shelljs": "^0.3.0",
     "bunyan": "^0.23.1",
     "serve-static": "^1.4.1",
-    "finalhandler": "^0.1.0"
+    "connect": "^3.1.0",
+    "bunyan-middleware": "0.0.1"
   }
 }
