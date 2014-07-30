@@ -4,7 +4,7 @@
   "description": "The support network for the SWEETcam system",
   "main": "index.js",
   "scripts": {
-    "start": "node start.js | bunyan -l 20 -o short",
+    "start": "node start.js --save-logs | bunyan -l 20 -o short",
     "repl": "node repl.js",
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --require should"
   },
@@ -34,6 +34,6 @@
     "bunyan": "^0.23.1",
     "serve-static": "^1.4.1",
     "connect": "^3.1.0",
-    "bunyan-middleware": "0.0.1"
+    "minimist": "^0.2.0"
   }
 }

@@ -26,7 +26,7 @@ function CamBot(config, name) {
 // This means we have a header that is the (length of string + 1) + 4 + 4 =
 // (length of string) + 9 bytes long, followed by the data.
 CamBot.prototype.sendVideo = function(filename) {
-    filename = path.join(__dirname, 'test_files', filename);
+    filename = path.join(__dirname, '..', 'files', filename);
     var camName = this.name;
     var id = 123;
     // net.connect port, hostname, listener for connect event

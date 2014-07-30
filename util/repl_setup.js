@@ -6,7 +6,7 @@
 
 var fs = require('fs');
 var config = require('./config');
-var bot = require('./testing/cam_bot')(config);
+var bot = require('./test/lib/cam_bot')(config);
 var messageServer = require('./servers/message_server');
 var apiServer = require('./servers/api_server');
 var videoServer = require('./servers/video_server');
