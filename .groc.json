@@ -1,0 +1,4 @@
+{
+    "glob": ["*.js", "servers/**/*.js", "test/**/*.js", "test/**/*.coffee", "util/**/*.js"],
+    "out": "_www/src/"
+}
