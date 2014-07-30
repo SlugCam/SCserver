@@ -25,3 +25,9 @@ Note that for growl to work on OSX for testing
 ```sh
 sudo gem install terminal-notifier
 ```
+
+### groc
+
+Groc is used to produce literate style documentation from the source code.  The
+configuration for groc is stores in .groc.json.
+
