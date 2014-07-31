@@ -1,0 +1,28 @@
+<div id="log-container">
+    <h1>
+      Message Log
+      <button class="pull-right" ng-click="updateLog()">Update</button>
+    </h1>
+    <table class="">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>ID</th>
+                <th>Camera Name</th>
+                <th>Message Type</th>
+                <th>Message Content</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="message in messages">
+                <td>{{message.time}}</td>
+                <td>{{message.id}}</td>
+                <td>{{message.cam}}</td>
+                <td>{{message.type}}</td>
+                <td>{{message.data}}</td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>

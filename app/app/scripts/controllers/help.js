@@ -7,8 +7,8 @@
  * # AboutCtrl
  * Controller of the sweetappApp
  */
-angular.module('sweetappApp')
-  .controller('AboutCtrl', function ($scope) {
+angular.module('myApp')
+  .controller('HelpCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',

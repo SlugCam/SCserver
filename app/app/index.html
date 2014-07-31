@@ -2,7 +2,7 @@
 <html class="no-js">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>SWEETnet App</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="sweetappApp">
+  <body ng-app="myApp" ng-controller="IndexCtrl">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -23,17 +23,18 @@
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
+          <li ng-class="{ active: isActive('/') }"><a ng-href="#">Dashboard</a></li>
+          <li ng-class="{ active: isActive('/log') }"><a ng-href="#/log">Log</a></li>
+          <li ng-class="{ active: isActive('/cameras') }"><a ng-href="#/cameras">Cameras</a></li>
+          <li ng-class="{ active: isActive('/help') }"><a ng-href="#/help">Help</a></li>
         </ul>
-        <h3 class="text-muted">sweetapp</h3>
+        <h3 class="text-muted">SWEETnet</h3>
       </div>
 
       <div ng-view=""></div>
 
       <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <p><span class="glyphicon glyphicon-facetime-video"></span> SWEETnet v0.0.1</p>
       </div>
     </div>
 
@@ -82,10 +83,14 @@
     <!-- endbower -->
     <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
-        <!-- endbuild -->
-</body>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/config.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/index.js"></script>
+    <script src="scripts/controllers/cameras.js"></script>
+    <script src="scripts/controllers/dashboard.js"></script>
+    <script src="scripts/controllers/help.js"></script>
+    <script src="scripts/controllers/log.js"></script>
+    <!-- endbuild -->
+  </body>
 </html>

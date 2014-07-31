@@ -9,7 +9,7 @@
  * Main module of the application.
  */
 angular
-  .module('sweetappApp', [
+  .module('myApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -20,12 +20,20 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        templateUrl: 'views/dashboard.html',
+        controller: 'DashCtrl'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+      .when('/cameras', {
+        templateUrl: 'views/cameras.html',
+        controller: 'CamCtrl'
+      })
+      .when('/help', {
+        templateUrl: 'views/help.html',
+        controller: 'HelpCtrl'
+      })
+      .when('/log', {
+        templateUrl: 'views/log.html',
+        controller: 'LogCtrl'
       })
       .otherwise({
         redirectTo: '/'
