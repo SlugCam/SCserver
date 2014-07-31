@@ -5,14 +5,23 @@ var baseUrl = 'http://localhost:7891/';
 
 
 angular.module('myApp.controllers', [])
-    .controller('MyCtrl1', ['$scope', '$http',
+    .controller('LogCtrl', ['$scope', '$http',
         function($scope, $http) {
-            $http.get(baseUrl + 'dump').success(function(data) {
-                $scope.messages = data;
-            });
+            $scope.updateLog = function() {
+                console.log('updated');
+                $http.get(baseUrl + 'dump').success(function(data) {
+                    $scope.messages = data;
+                });
+            };
+            $scope.updateLog();
         }
     ])
-    .controller('MyCtrl2', ['$scope',
+    .controller('DashCtrl', ['$scope',
+        function($scope) {
+
+        }
+    ])
+    .controller('CamCtrl', ['$scope',
         function($scope) {
 
         }
