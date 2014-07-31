@@ -1,6 +1,13 @@
+# We need bower_components in dist, so we ignore app/bower_components in root
+# gitignore file
+
+# bower_components
+
 node_modules
+
 # We will commit the dist
+
 # dist
+
 .tmp
 .sass-cache
-bower_components
