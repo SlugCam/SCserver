@@ -77,7 +77,7 @@ messageServer.listen(config.messageServer.port, sweetLog('messageServer'));
 apiServer.listen(config.apiServer.port, sweetLog('apiServer'));
 videoServer.listen(config.videoServer.port, sweetLog('videoServer'));
 
-// ### Serve the Web App
+// ### Serve the web app
 
 // To serve the web app we just create a simple static server using the connect
 // library that points at the root of the application code
@@ -92,7 +92,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(serveStatic('webapp/app', {
+app.use(serveStatic('app/app', {
     'index': ['index.html', 'index.htm']
 }));
 app.listen(8000);
