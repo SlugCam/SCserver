@@ -19,6 +19,11 @@ var config = require('./config'),
     serveStatic = require('serve-static'),
     connect = require('connect');
 
+// Message
+// -------
+console.log('Note, this start script also starts a static server for the angular app.');
+console.log('To build the app go to the app directory and run `grunt build`.');
+
 // Script
 // ------
 
@@ -92,7 +97,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(serveStatic('app/app', {
+app.use(serveStatic('app/dist', {
     'index': ['index.html', 'index.htm']
 }));
 app.listen(8000);
