@@ -6,6 +6,23 @@ The network software behind the SWEETcam system.
 
 Configuration file can either be json or js.
 
+### Running as Daemon
+
+To run the servers as a daemon, we are currently using
+[forever](https://github.com/nodejitsu/forever). Forever not only starts a
+script as a daemon, but also restarts it if it crashes. Forever is installed
+locally as a dependency in the npm package, so the program can be accessed in
+`node_modules/.bin`, however the npm package also provides the following
+scripts:
+
+- `npm run startd`: starts the servers as a daemon
+- `npm run restartd`: restarts the daemon
+- `npm run stopd`: stop the daemon
+
+Forever provides its own logging system and further information can be found in
+its documentation. Optimally this should be implemented at the individual server
+level so that each server can individually restart as well, this will be done at
+a later time.
 ## Development
 
 npm is used for package management. To install all project dependencies locally

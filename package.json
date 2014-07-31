@@ -7,7 +7,10 @@
     "start": "node start.js --save-logs | bunyan -l 20 -o short",
     "repl": "node repl.js",
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --require should",
-    "doc": "groc"
+    "doc": "groc",
+    "startd": "forever start start.js --save-logs",
+    "stopd": "forever stop start.js",
+    "restartd": "forever restart start.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +36,7 @@
     "bunyan": "^0.23.1",
     "serve-static": "^1.4.1",
     "connect": "^3.1.0",
-    "minimist": "^0.2.0"
+    "minimist": "^0.2.0",
+    "forever": "^0.11.1"
   }
 }
