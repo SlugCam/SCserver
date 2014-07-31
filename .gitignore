@@ -1,7 +1,3 @@
-# Ignore bower components in app folder (needs bower_components in app/dist,
-# otherwise should be ignored in app/.gitignore)
-app/bower_components
-
 # Logs
 _logs
 logs
