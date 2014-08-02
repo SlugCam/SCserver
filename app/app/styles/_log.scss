@@ -1,2 +1,9 @@
+// bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/bootstrap.scss";
+// endbower
 
+.log-master-table {
+  @extend .table;
+  @extend .table-condensed;
+  @extend .table-hover;
+}

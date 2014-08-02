@@ -2,6 +2,10 @@
 
 The network software behind the SWEETcam system.
 
+## Todo
+
+Remove local bower dependency from app directory.
+
 ## Usage
 
 Configuration file can either be json or js.

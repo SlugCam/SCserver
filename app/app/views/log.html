@@ -3,7 +3,7 @@
       Message Log
       <button class="pull-right" ng-click="updateLog()">Update</button>
     </h1>
-    <table class="">
+    <table class="log-master-table">
         <thead>
             <tr>
                 <th>Timestamp</th>
@@ -20,7 +20,9 @@
                 <td>{{message.id}}</td>
                 <td>{{message.cam}}</td>
                 <td>{{message.type}}</td>
-                <td>{{message.data}}</td>
+                <td>
+                  <div my-object-list data="message.data"></div>
+                </td>
 
             </tr>
         </tbody>
