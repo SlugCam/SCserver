@@ -6,6 +6,7 @@ The data storage requirements for this project are can be abstracted into the fo
 - Stages
 - Message Store
 - Videos
+- Cameras
 
 A storage API exists in `db.js` that requires to following major functions:
 

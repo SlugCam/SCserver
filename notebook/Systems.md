@@ -37,8 +37,9 @@ graph G {
 
     apiServer--db;
     apiServer--webClient;
-  
+    apiServer--futureapps
 
+    futureapps[label="Other Apps"]
     webClient[label="Web Client"];
 
 }
