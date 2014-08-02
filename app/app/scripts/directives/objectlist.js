@@ -6,6 +6,27 @@ angular.module('myApp')
             scope: {
                 data: '=data'
             },
+            template: '<span></span>',
+            link: function(scope, element, attrs) {
+                //element.empty();
+                var htmlString = ''; 
+                Object.keys(scope.data).forEach(function (key) {
+                    htmlString += '<strong>' + key + '</strong>:' + scope.data[key] + '; ';
+                    
+                });
+                element.html(htmlString);
+            }
+        };
+
+    });
+/*
+    .directive('myObjectList', function() {
+        return {
+            replace: true,
+            transclude: false,
+            scope: {
+                data: '=data'
+            },
             template: '<class="dl-horizontal list-inline"></dl>',
             link: function(scope, element, attrs) {
                 element.empty();
@@ -21,3 +42,4 @@ angular.module('myApp')
         };
 
     });
+    */
