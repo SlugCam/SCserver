@@ -16,5 +16,8 @@ angular.module('myApp')
                 });
             };
             $scope.updateLog();
+            $scope.fromUnixTime = function (unixTime) {
+                return (new Date(unixTime * 1000)).toLocaleString();
+            }
         }
     ]);
