@@ -40,6 +40,7 @@ install grunt-cli globally on your system, run `npm install -g grunt-cli`.
 
 - mongo is required, available in homebrew and other package managers.
 - grunt-cli must be installed globally to use grunt.
+- ffmpeg is required on the path for video conversion
 
 Note that for growl to work on OSX for testing
 
