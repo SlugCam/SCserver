@@ -16,6 +16,7 @@
 var net = require('net');
 var VideoProtocol = require('./video_protocol').VideoProtocol;
 var log;
+var videoPath;
 
 // This is our data store library. It contains the functions we use to store
 // videos to the database.
@@ -29,7 +30,7 @@ var server = net.createServer(function(c) { //'connection' listener
     log.info('server connected');
 
     // TODO make sure the path exists
-    c.pipe(new VideoProtocol(config.videoServer.path));
+    c.pipe(new VideoProtocol(videoPath));
 
     c.on('end', function() {
         log.info('server disconnected');
@@ -38,7 +39,8 @@ var server = net.createServer(function(c) { //'connection' listener
 });
 
 // listen starts the server listening on the given port.
-exports.listen = function(port, logger) {
+exports.listen = function(port, logger, videoDataPath) {
+    videoPath = videoDataPath;
     if (!logger) {
         console.error('video_server: requires a log object');
         return;

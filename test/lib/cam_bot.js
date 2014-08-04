@@ -25,10 +25,9 @@ function CamBot(config, name) {
 // - Data
 // This means we have a header that is the (length of string + 1) + 4 + 4 =
 // (length of string) + 9 bytes long, followed by the data.
-CamBot.prototype.sendVideo = function(filename) {
-    filename = path.join(__dirname, '..', 'files', filename);
+CamBot.prototype.sendVideo = function(id) {
+    filename = path.join(__dirname, '..', 'files', id.toString() + '.avi');
     var camName = this.name;
-    var id = 123;
     // net.connect port, hostname, listener for connect event
     console.log('Attempting to send video to ' + this.videoHostname + ':' + this.videoPort);
     var client = net.connect(this.videoPort, this.videoHostname, function() {
@@ -54,7 +53,7 @@ CamBot.prototype.sendVideo = function(filename) {
 
     client.on('data', function(data) {
         console.log(data.toString());
-        client.end();
+        // client.end();
     });
 
     client.on('end', function() {

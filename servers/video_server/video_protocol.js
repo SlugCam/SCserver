@@ -3,11 +3,15 @@
 //
 // This file contains a writable stream that reads a TCP stream and parses our
 // video transfer protocol.
+//
+// TODO is memory leak possible?
 
 var Writable = require('stream').Writable;
 var util = require('util');
 var fs = require('fs');
 var path = require('path');
+var mkdirp = require('mkdirp').sync;
+var exec = require('child_process').exec;
 
 // This function takes a buffer as an argument and returns the index of the
 // first null byte, or -1 if a null byte is not found.
@@ -37,6 +41,7 @@ function VideoProtocol(outputPath) {
     this.vidId = null;
     this.vidLength = null;
     this.fileStream = null;
+    this.lengthWritten = 0;
 }
 
 // This is the method that requires overwriting in the Node writable stream
@@ -91,28 +96,65 @@ VideoProtocol.prototype._scan = function() {
 
     if (continueScan && !this.fileStream) {
         this.fileStream = fs.createWriteStream(
-            this.getAndCheckPath.call(that)
+            this.getAndCheckTmpPath.call(that) + '.avi'
         );
+        // TODO will finish be called even if stream incorrectly terminated
+        this.fileStream.on('finish', downloadCompleter(this.camName, this.vidId));
+        this.lengthWritten = 0;
         // We have everything we need, so open up a file stream
     }
     if (continueScan) {
-        this.fileStream.write(this.buff);
+        // TODO length or byteLength (all over this file)
+        var remainingData = this.vidLength - this.lengthWritten;
+        if (remainingData <= this.buff.length) {
+            // We are done
+            this.fileStream.write(this.buff.slice(0, remainingData));
+            this.buff = this.buff.slice(remainingData);
+            this.fileStream.end();
+        } else {
+            // There is more 
+            this.fileStream.write(this.buff);
+            this.buff = new Buffer(0);
+        }
         // Everything is setup, so just write to the file stream
         // TODO Check if this length is done
     }
 
-    // TODO Check for the stream being finished
+    // TODO Check for the stream being finished to clean up
 
 
     //TODO remove else, check for continue to new video
     console.log(this.camName, this.vidId, this.vidLength);
 };
+
+function downloadCompleter(outputPath, camName, vidId) {
+    return function() {
+        var tmpPath = path.join(outputPath, 'tmp', camName, vidId.toString() + '.avi');
+        // make output directory if it does not exist
+        var camDir = path.join(outputPath, 'vids', camName);
+        mkdirp(camDir);
+        var outPath = path.join(camDir, vidId.toString());
+        // move file to output directory
+        fs.renameSync(tmpPath, outPath + '.avi');
+        // mark as complete in database and send ack
+        // TODO
+        // start conversion, when done mark as converted
+        exec('ffmpeg -i ' + outPath + '.avi ' + outPath + '.mp4',
+            function(error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
+            });
+    };
+}
+
+// TODO more importantly, could avoid much of the directory checking
 // TODO this could be more robust.
-VideoProtocol.prototype.getAndCheckPath = function() {
-    var camDir = path.join(this.outputPath, this.camName);
-    if (!fs.existsSync(camDir)) {
-        fs.mkdirSync(camDir);
-    }
+VideoProtocol.prototype.getAndCheckTmpPath = function() {
+    var camDir = path.join(this.outputPath, 'tmp', this.camName);
+    mkdirp(camDir);
     return path.join(camDir, this.vidId.toString());
 };
 

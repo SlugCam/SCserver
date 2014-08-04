@@ -80,7 +80,7 @@ require('./servers/lib/db').setConfig(config, sweetLog('dataLib'));
 // ### Start the servers
 messageServer.listen(config.messageServer.port, sweetLog('messageServer'));
 apiServer.listen(config.apiServer.port, sweetLog('apiServer'));
-videoServer.listen(config.videoServer.port, sweetLog('videoServer'));
+videoServer.listen(config.videoServer.port, sweetLog('videoServer'), config.videoServer.path);
 
 // ### Serve the web app
 
