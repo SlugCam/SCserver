@@ -11,16 +11,16 @@
 // - Video Length (unsigned 32 int)
 // - Data
 
-
 // We use the Node.js `net` library to facilitate TCP communication.
 var net = require('net');
-var VideoProtocol = require('./video_protocol').VideoProtocol;
-var log;
-var videoPath;
+var VideoProtocolModule = require('./video_protocol');
+var VideoProtocol = VideoProtocolModule.VideoProtocol;
+
+var log, videoPath;
 
 // This is our data store library. It contains the functions we use to store
 // videos to the database.
-// var db = require('./lib/db.js');
+var db = require('../lib/db.js');
 
 // Build a server object, `net.createServer` creates a server object and sets
 // the function to be the listener for the `connection` event. This function
@@ -29,10 +29,16 @@ var videoPath;
 var server = net.createServer(function(c) { //'connection' listener
     log.info('server connected');
 
-    // TODO make sure the path exists
-    c.pipe(new VideoProtocol(videoPath));
+    var videoWriter = new VideoProtocol();
+    videoWriter.events.on('videoReceived', function(camName, vidId) {
+        log.info('Video', vidId, 'received from', camName);
+        // Write ack, mark db
+
+    });
+    c.pipe(videoWriter);
 
     c.on('end', function() {
+        // TODO clean up?
         log.info('server disconnected');
     });
 
@@ -40,14 +46,13 @@ var server = net.createServer(function(c) { //'connection' listener
 
 // listen starts the server listening on the given port.
 exports.listen = function(port, logger, videoDataPath) {
-    videoPath = videoDataPath;
-    if (!logger) {
-        console.error('video_server: requires a log object');
-        return;
+    if (!port || !logger || !videoDataPath) {
+        throw ('video_server.listen: called with incorrect arguments.');
     }
+    videoPath = videoDataPath;
     log = logger;
+    VideoProtocolModule.configure(videoPath, log);
     server.listen(port, function() {
         log.info('server bound to port ' + port);
     });
 };
-

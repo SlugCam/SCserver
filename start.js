@@ -57,7 +57,7 @@ function sweetLog(name) {
     var config = {
         name: name,
         streams: [{
-            level: 'info',
+            level: 'trace',
             stream: process.stdout // log INFO and above to stdout
         }, ]
     };

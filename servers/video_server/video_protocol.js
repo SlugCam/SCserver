@@ -2,9 +2,17 @@
 // =================
 //
 // This file contains a writable stream that reads a TCP stream and parses our
-// video transfer protocol.
+// video transfer protocol. Uses the node EventEmitter interface with the event
+// `videoReceived` emitted after a video is fully received. The listener should
+// be a function that takes the camera name and id as arguments.
 //
-// TODO is memory leak possible?
+// TO-DO
+// -----
+// 
+// - Is memory leak possible?
+// - Should we check if video has been sucessfully downloaded before allowing
+//   the overwrite of a correct video that may fail?
+// - Are we checking directories to often?
 
 var Writable = require('stream').Writable;
 var util = require('util');
@@ -12,12 +20,17 @@ var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp').sync;
 var exec = require('child_process').exec;
+var EventEmitter = require("events").EventEmitter;
+
+// These must be set before use by the exported configure function
+var baseDir, log;
 
 // This function takes a buffer as an argument and returns the index of the
 // first null byte, or -1 if a null byte is not found.
 function findNullByte(buff) {
     var nullIndex = -1;
-    for (var i = 0; i < buff.length; i++) {
+    var i;
+    for (i = 0; i < buff.length; i++) {
         if (buff.get(i) === 0) {
             nullIndex = i;
             break;
@@ -29,20 +42,23 @@ function findNullByte(buff) {
 // VideoProtocol Writable Stream
 // -----------------------------
 
-util.inherits(VideoProtocol, Writable);
 
-// This is the constructor for our stream object. It takes the a path in which
-// to store videos as an argument. *This path must already exist.*
-function VideoProtocol(outputPath) {
+// This is the constructor for our stream object. 
+function VideoProtocol() {
+    log.trace('New VideoProtocol created');
+    if (!log || !baseDir) {
+        throw 'Video protocol module must be configured before use';
+    }
     Writable.call(this, {});
-    this.outputPath = outputPath;
     this.buff = new Buffer(0);
     this.camName = null;
     this.vidId = null;
     this.vidLength = null;
     this.fileStream = null;
-    this.lengthWritten = 0;
+    this.remainingData = null; // doesn't need to be here
+    this.events = new EventEmitter();
 }
+util.inherits(VideoProtocol, Writable);
 
 // This is the method that requires overwriting in the Node writable stream
 // api. For more information, read the streams section in the Node docs. Node
@@ -53,13 +69,14 @@ VideoProtocol.prototype._write = function(chunk, encoding, callback) {
     // for further processing. This should be checked however.
     this.buff = Buffer.concat([this.buff, chunk]);
     this._scan.call(that);
-    // TODO Need to call callback
+    callback();
 };
 
 // `_scan` contains the bulk of the work, it scans through the current
 // buffer, while referencing the current state of our stream, either reading
 // meta data or piping the video data into a file.
 VideoProtocol.prototype._scan = function() {
+    log.trace('VideoProtocol#scan called, buffer length:', this.buff.length, 'buffer:', this.buff);
     // Continue scan starts as false, because we will scan again only if we
     // are able to successfully parse a value at some point (at which point we
     // will set it to true). If we never successfully parse a value, we know we
@@ -95,65 +112,87 @@ VideoProtocol.prototype._scan = function() {
     }
 
     if (continueScan && !this.fileStream) {
+        log.trace('VideoProtocol: creating file stream');
+        // We have everything we need, so open up a file stream
         this.fileStream = fs.createWriteStream(
             this.getAndCheckTmpPath.call(that) + '.avi'
         );
-        // TODO will finish be called even if stream incorrectly terminated
-        this.fileStream.on('finish', downloadCompleter(this.camName, this.vidId));
-        this.lengthWritten = 0;
-        // We have everything we need, so open up a file stream
+        // TODO will finish be called even if stream incorrectly terminated?
+        this.fileStream.on('finish', this._downloadCompletionFunctionFactory.call(that));
+        this.remainingData = this.vidLength;
+
     }
     if (continueScan) {
-        // TODO length or byteLength (all over this file)
-        var remainingData = this.vidLength - this.lengthWritten;
-        if (remainingData <= this.buff.length) {
+        // Everything is setup, so just write to the file stream
+        log.trace('scan pushing to data to file stream');
+        if (this.remainingData <= this.buff.length) {
+            log.trace('all data for file has been received');
             // We are done
-            this.fileStream.write(this.buff.slice(0, remainingData));
-            this.buff = this.buff.slice(remainingData);
+            this.fileStream.write(this.buff.slice(0, this.remainingData));
+            this.buff = this.buff.slice(this.remainingData);
             this.fileStream.end();
+            // Reset everything, noting that these are all the conditions to
+            // restart the if chain
+            this.camName = null;
+            this.vidId = null;
+            this.vidLength = null;
+            this.fileStream = null;
+            // remainingData will be reset later
+
+            // continueScan is still true here like it should be
         } else {
+            log.trace('pushing data to file, not complete; remaining',
+                this.remainingData, ', bufflength:', this.buff.length);
             // There is more 
+            this.remainingData = this.remainingData - this.buff.length;
             this.fileStream.write(this.buff);
             this.buff = new Buffer(0);
+            continueScan = false;
         }
-        // Everything is setup, so just write to the file stream
-        // TODO Check if this length is done
     }
 
-    // TODO Check for the stream being finished to clean up
-
-
-    //TODO remove else, check for continue to new video
-    console.log(this.camName, this.vidId, this.vidLength);
+    // This means buffer still may contain part of another video, so continue
+    // the scan. This avoids the possibility of having an entire video in the
+    // buffer with the client not needing to write anything, which would create
+    // a deadlock.
+    if (continueScan) {
+        this._scan.call(that);
+    }
 };
 
-function downloadCompleter(outputPath, camName, vidId) {
+// This function returns a function to be called after the video is complete.
+// This returned function, moves the 
+VideoProtocol.prototype._downloadCompletionFunctionFactory = function() {
+    var camName = this.camName;
+    var vidId = this.vidId;
+    var ee = this.events;
     return function() {
-        var tmpPath = path.join(outputPath, 'tmp', camName, vidId.toString() + '.avi');
+        log.trace('downloadCompleter called (file write stream finished) for' +
+            camName + '/' + vidId.toString());
+
+        var tmpPath = path.join(baseDir, 'tmp', camName, vidId.toString() + '.avi');
         // make output directory if it does not exist
-        var camDir = path.join(outputPath, 'vids', camName);
+        var camDir = path.join(baseDir, 'vids', camName);
         mkdirp(camDir);
         var outPath = path.join(camDir, vidId.toString());
         // move file to output directory
         fs.renameSync(tmpPath, outPath + '.avi');
-        // mark as complete in database and send ack
-        // TODO
         // start conversion, when done mark as converted
         exec('ffmpeg -i ' + outPath + '.avi ' + outPath + '.mp4',
             function(error, stdout, stderr) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                log.trace('ffmpeg: ' + stdout);
+                log.error('ffmpeg: ' + stderr);
                 if (error !== null) {
-                    console.log('exec error: ' + error);
+                    log.error('ffmpeg exited with error code: ' + error);
                 }
             });
+        // Emit our video received event
+        ee.emit('videoReceived', camName, vidId);
     };
-}
+};
 
-// TODO more importantly, could avoid much of the directory checking
-// TODO this could be more robust.
 VideoProtocol.prototype.getAndCheckTmpPath = function() {
-    var camDir = path.join(this.outputPath, 'tmp', this.camName);
+    var camDir = path.join(baseDir, 'tmp', this.camName);
     mkdirp(camDir);
     return path.join(camDir, this.vidId.toString());
 };
@@ -171,14 +210,14 @@ VideoProtocol.prototype.getAndCheckTmpPath = function() {
 // `parseString(buff)` parses the a null terminated ASCII string from the 
 // specified buffer.
 function parseString(buff) {
-    ret = {
+    var ret = {
         success: false,
         value: null,
         buffer: buff
     };
     // If we have a null byte, we know that there is a finished camera name.
-    nullIndex = findNullByte(buff);
-    if (nullIndex != -1) {
+    var nullIndex = findNullByte(buff);
+    if (nullIndex !== -1) {
         ret.success = true;
         ret.value = buff.toString('ascii', 0, nullIndex);
         ret.buffer = buff.slice(nullIndex + 1);
@@ -188,7 +227,7 @@ function parseString(buff) {
 
 // `parseInt(buff)` parses a UInt32BE from the buffer if it is long enough.
 function parseInt(buff) {
-    ret = {
+    var ret = {
         success: false,
         value: null,
         buffer: buff
@@ -203,7 +242,14 @@ function parseInt(buff) {
 
 // Exports
 // -------
-//
-// This module only exports the VideoProtocol writable stream.
 
+// dataDirectory is a path in which to store videos as an argument. *This path
+// must already exist.*, logger is a logging object (we are currently using
+// bunyan)
+exports.configure = function(dataDirectory, logger) {
+    baseDir = dataDirectory;
+    log = logger;
+};
+
+// VideoProtocol is the main writable stream
 exports.VideoProtocol = VideoProtocol;
