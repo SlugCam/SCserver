@@ -23,6 +23,10 @@ angular
         templateUrl: 'views/dashboard.html',
         controller: 'DashCtrl'
       })
+      .when('/video/:cam/:id', {
+        templateUrl: 'views/video.html',
+        controller: 'VidCtrl'
+      })
       .when('/cameras', {
         templateUrl: 'views/cameras.html',
         controller: 'CamCtrl'

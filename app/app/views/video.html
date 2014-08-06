@@ -1,0 +1,10 @@
+<h1>Video Player</h1>
+<h2>{{camName}}/{{id}}</h2>
+<p>Download:
+    <a ng-href="{{mp4Url}}" download>mp4</a>
+    <a ng-href="{{aviUrl}}" download="{{camName}}.{{id}}.avi">avi</a>
+</p>
+<video width="100%" controls>
+    <source ng-src="{{mp4Url | trusted}}" type="video/mp4">
+        Your browser does not support the video tag.
+</video>
