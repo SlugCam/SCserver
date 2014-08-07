@@ -22,11 +22,20 @@ app.use(function(req, res, next) {
     next();
 });
 
+
+
 app.get('/dump', function(req, res) {
-    db.getMessages(function (data) {
+    db.getMessages(function(data) {
         res.json(data);
     });
     //res.send('hello world');
+});
+
+app.use('/media', function(req, res, next) {
+    if (req.query.download) {
+
+    }
+    next();
 });
 
 
@@ -37,9 +46,10 @@ exports.listen = function(port, logger, videoFolder) {
     }
     log = logger;
     // Must be done when we know the folder
-    app.use('/media', express.static(path.join(videoFolder, 'vids')));
+    app.use('/media', express.static(path.join(videoFolder, 'vids'), {
+//          setHeaders: function (res) { res.setHeader('Content-Disposition', 'attachment'); }
+    }));
 
     log.info('server bound to port ' + port);
     app.listen(port);
 };
-
