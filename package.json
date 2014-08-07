@@ -9,6 +9,7 @@
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --require should",
     "doc": "groc",
     "startd": "forever start start.js --save-logs",
+    "logd": "tail -f _logs/SWEETnet.log | node_modules/.bin/bunyan",
     "stopd": "forever stop start.js",
     "restartd": "forever restart start.js"
   },
