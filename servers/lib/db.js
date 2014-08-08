@@ -24,9 +24,29 @@ exports.setConfig = function(config, logger) {
 exports.storeMessage = function(message) {
     // Check if camera is registered
     db.collection('mstore').insert(message, function(err, result) {
-        if (err) throw err;
-        if (result) log.trace('message store successful');
+        if (err) {
+            log.error('message not stored: ', err);
+        } else {
+            log.trace('message store successful');
+        }
     });
+
+    if (message.cam) {
+        // Track last message time
+        db.collection('cameras').update({
+            name: message.cam,
+        }, {
+            $currentDate: {
+                lastMessage: true
+            }
+        }, {
+            upsert: true
+        }, function(err, count) {
+            if (err) {
+                log.error('error updating last message date', err);
+            }
+        });
+    }
 };
 
 // Returns an array of all messages
@@ -42,7 +62,7 @@ exports.getMessages = function(cb) {
 // ----------------
 
 exports.getCameras = function(cb) {
-    db.collection('stages').toArray(function(err, result) {
+    db.collection('cameras').find().toArray(function(err, result) {
         if (err) throw err;
         cb(result);
     });
@@ -51,7 +71,7 @@ exports.getCameras = function(cb) {
 // Video Functions
 // ---------------
 
-// Callback takes an error message if error and count of updated as per mongodb
+// Optional callback takes an error message if error and count of updated as per mongodb
 // specs
 exports.setVideoUploaded = function(camName, vidId, callback) {
     db.collection('videos').update({
@@ -72,6 +92,21 @@ exports.setVideoUploaded = function(camName, vidId, callback) {
             } else {
                 log.info(camName + '/' + vidId.toString() + ' set as uploaded');
             }
+        }
+    });
+
+    // Track last video time
+    db.collection('cameras').update({
+        name: camName,
+    }, {
+        $currentDate: {
+            lastVideo: true
+        }
+    }, {
+        upsert: true
+    }, function(err, count) {
+        if (err) {
+            log.error('error updating last video date', err);
         }
     });
 };
