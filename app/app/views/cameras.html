@@ -1,0 +1,17 @@
+<h1>Cameras</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Camera Name</th>
+            <th>Last Message Received</th>
+            <th>Last Video Received</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="camera in cameras">
+            <td>{{camera.name}}</td>
+            <td>{{camera.lastMessage}}</td>
+            <td>{{camera.lastVideo}}</td>
+        </tr>
+    </tbody>
+</table>
