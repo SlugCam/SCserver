@@ -4,6 +4,13 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 // endbower
 @import "log";
 
+// Default table style
+table {
+  @extend .table;
+  @extend .table-condensed;
+  @extend .table-hover;
+}
+      
 button {
   @extend .btn;
   @extend .btn-default;
