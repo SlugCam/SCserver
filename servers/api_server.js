@@ -24,11 +24,17 @@ app.use(function(req, res, next) {
 
 
 
-app.get('/dump', function(req, res) {
+app.get('/messages', function(req, res) {
     db.getMessages(function(data) {
         res.json(data);
     });
     //res.send('hello world');
+});
+
+app.get('/videos', function(req, res) {
+    db.getUploadedVideos(function (data) {
+        res.json(data);
+    });
 });
 
 app.use('/media', function(req, res, next) {

@@ -1,8 +1,25 @@
 <div id="log-container">
-    <h1>
+    <button ng-click="updateLog()">Update</button>
+    <h2>Video Log</h2>
+    <table class="log-master-table">
+        <thead>
+            <tr>
+                <th>Camera Name</th>
+                <th>Video ID</th>
+                <th>View Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="video in videos">
+                <td>{{video.cam}}</td>
+                <td>{{video.id}}</td>
+                <td><a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>
       Message Log
-      <button class="pull-right" ng-click="updateLog()">Update</button>
-    </h1>
+    </h2>
     <table class="log-master-table">
         <thead>
             <tr>
@@ -21,7 +38,7 @@
                 <td>{{message.cam}}</td>
                 <td>{{message.type}}</td>
                 <td>
-                  <div my-object-list data="message.data"></div>
+                    <div my-object-list data="message.data"></div>
                 </td>
 
             </tr>

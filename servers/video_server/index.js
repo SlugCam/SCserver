@@ -33,6 +33,7 @@ var server = net.createServer(function(c) { //'connection' listener
     videoWriter.events.on('videoReceived', function(camName, vidId) {
         log.info('Video', vidId, 'received from', camName);
         // Write ack, mark db
+        db.setVideoUploaded(camName, vidId);
 
     });
     c.pipe(videoWriter);
