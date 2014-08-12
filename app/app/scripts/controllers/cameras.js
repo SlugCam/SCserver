@@ -8,7 +8,7 @@
  * Controller of the sweetappApp
  */
 angular.module('myApp')
-    .controller('CamCtrl', function($scope, $http) {
+    .controller('CamCtrl', function($scope, $http, config) {
         $scope.update = function() {
             $http.get(config.apiUrl + 'cameras').success(function(data) {
                 $scope.cameras = data;

@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('myApp')
     .directive('myObjectList', function() {
         return {
@@ -8,7 +10,6 @@ angular.module('myApp')
             },
             template: '<span></span>',
             link: function(scope, element, attrs) {
-                //element.empty();
                 var htmlString = ''; 
                 Object.keys(scope.data).forEach(function (key) {
                     htmlString += '<strong>' + key + '</strong>:' + scope.data[key] + '; ';

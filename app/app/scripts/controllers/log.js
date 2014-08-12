@@ -8,9 +8,9 @@
  * Controller of the sweetappApp
  */
 angular.module('myApp')
-    .controller('LogCtrl', ['$scope', '$http',
-        function($scope, $http) {
-            $scope.updateLog = function () {
+    .controller('LogCtrl', ['$scope', '$http', 'openVideoModal', 'config',
+        function($scope, $http, openVideoModal, config) {
+            $scope.updateLog = function() {
                 $http.get(config.apiUrl + 'messages').success(function(data) {
                     $scope.messages = data;
                 });
@@ -20,8 +20,6 @@ angular.module('myApp')
             };
             $scope.updateLog();
 
-            $scope.fromUnixTime = function (unixTime) {
-                return (new Date(unixTime * 1000)).toLocaleString();
-            };
+            $scope.openVideo = openVideoModal;
         }
     ]);

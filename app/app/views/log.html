@@ -13,7 +13,10 @@
             <tr ng-repeat="video in videos">
                 <td>{{video.cam}}</td>
                 <td>{{video.id}}</td>
-                <td><a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a></td>
+                <td>
+                  <a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a>
+                  <button ng-click="openVideo(video.cam, video.id)">Play Video</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -33,7 +36,7 @@
 
         <tbody>
             <tr ng-repeat="message in messages">
-                <td>{{fromUnixTime(message.time)}}</td>
+                <td>{{message.time | fromUnixTime}}</td>
                 <td>{{message.id}}</td>
                 <td>{{message.cam}}</td>
                 <td>{{message.type}}</td>
