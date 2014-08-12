@@ -8,7 +8,18 @@ Remove local bower dependency from app directory.
 
 ## Usage
 
-Configuration file can either be json or js.
+## Configuration
+
+Configuration files must be created before use. There are **two** configuration
+files that need to be created.
+
+1. :/config.js - the main project configuration file
+2. :/app/app/scripts/config.js - the web app configuration file
+
+In both cases example configuration files are provided in the same directory
+named config.js.example. Configuration files are not checked in, this way
+different systems can share the main branch of the repository.
+
 
 ### Running as Daemon
 
