@@ -23,12 +23,12 @@ app.use(function(req, res, next) {
 });
 
 
-
+// Routes
+// ------
 app.get('/messages', function(req, res) {
     db.getMessages(function(data) {
         res.json(data);
     });
-    //res.send('hello world');
 });
 
 app.get('/videos', function(req, res) {
@@ -42,6 +42,12 @@ app.get('/cameras', function(req, res) {
         res.json(data);
     });
 });
+app.get('/cameras/:name', function(req, res) {
+    db.getCamera(req.params.name, function (data) {
+        res.json(data);
+    });
+});
+
 
 app.use('/media', function(req, res, next) {
     if (req.query.download) {

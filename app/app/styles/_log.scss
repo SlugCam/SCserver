@@ -1,4 +1,32 @@
-// bower:scss
-@import "bootstrap-sass-official/assets/stylesheets/bootstrap.scss";
-// endbower
+@import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
 
+#log-container {
+  @extend .row;
+
+  .log-filters {
+    @extend .col-md-3;
+  }
+
+  .log-output {
+    @extend .col-md-9;
+    table {
+      margin-top: 12px;
+    }
+  }
+
+}
+
+#camera-config-container {
+  @extend .row;
+
+  .camera-config-stats-section {
+    @extend .col-md-4;
+    h1, h2 {
+      margin-top: 0;
+    }
+  }
+
+  .camera-config-map-section {
+    @extend .col-md-8;
+  }
+}

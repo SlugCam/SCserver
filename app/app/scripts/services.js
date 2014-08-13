@@ -14,4 +14,29 @@ angular.module('myApp')
                 });
             };
         }
+    ])
+    .factory('apiService', ['$http', 'config',
+        function($http, config) {
+            var exports = {};
+
+            // Callback is called if successful with JS array of all message
+            // objects.
+            exports.getAllMessages = function(callback) {
+                $http.get(config.apiUrl + 'messages').success(callback);
+            };
+
+            exports.getAllVideos = function(callback) {
+                $http.get(config.apiUrl + 'videos').success(callback);
+            };
+
+            exports.getAllCameras = function(callback) {
+                $http.get(config.apiUrl + 'cameras').success(callback);
+            };
+
+            exports.getCamera = function(camName, callback) {
+                $http.get(config.apiUrl + 'cameras/' + camName).success(callback);
+            };
+
+            return exports;
+        }
     ]);

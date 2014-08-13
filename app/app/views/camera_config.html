@@ -1,0 +1,24 @@
+<div id="camera-config-container">
+    <div class="camera-config-stats-section">
+      <h2><span tooltip="Camera Name" tooltip-placement="right">{{camera.name}}</span></h2>
+        <dl>
+            <dt>Current battery level</dt>
+            <dd>x% @ y time (link to battery graph modal)</dd>
+            <dt>Last message received</dt>
+            <dd>{{camera.lastMessage | date}}</dd>
+            <dt> Last video received</dt>
+            <dd>{{camera.lastVideo | date}}</dd>
+        </dl>
+    </div>
+
+    <div class="camera-config-map-section">
+        <leaflet markers="markers" center="center" defaults="defaults" width="100%" height="340px"></leaflet>
+        <div class="alert alert-danger" role="alert" ng-show="locationNotSet">
+            Location has never been set, showing default pin location
+        </div>
+        <form name="mapForm">
+            latitude: {{markers.cam.lat}}, longitude: {{markers.cam.lng}}
+            <button class="pull-right" ng-click="saveLocation()">Save Location</button>
+        </form>
+    </div>
+</div>

@@ -68,6 +68,13 @@ exports.getCameras = function(cb) {
     });
 };
 
+exports.getCamera = function(name, cb) {
+    db.collection('cameras').findOne({name: name}, function(err, result) {
+        if (err) throw err;
+        cb(result);
+    });
+};
+
 // Video Functions
 // ---------------
 

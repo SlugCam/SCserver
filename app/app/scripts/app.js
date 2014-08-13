@@ -33,6 +33,10 @@ angular
         templateUrl: 'views/cameras.html',
         controller: 'CamCtrl'
       })
+      .when('/cameras/:name', {
+        templateUrl: 'views/camera_config.html',
+        controller: 'CamConfigCtrl'
+      })
       .when('/help', {
         templateUrl: 'views/help.html',
         controller: 'HelpCtrl'
