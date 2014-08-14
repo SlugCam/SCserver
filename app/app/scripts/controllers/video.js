@@ -8,25 +8,21 @@
  * Controller of the sweetappApp
  */
 angular.module('myApp')
-    .controller('VidCtrl', ['$scope', '$routeParams', '$log', 'config',
-        function($scope, $routeParams, $log, config) {
+    .controller('VidCtrl', ['$scope', '$routeParams', '$log', 'apiService',
+        function($scope, $routeParams, $log, apiService) {
             $scope.id = $routeParams.id;
             $scope.camName = $routeParams.cam;
             $log.log('VidCtrl', $scope.id, $scope.camName);
-            var videoUrl = config.apiUrl + 'media/' + $scope.camName + '/' +
-                $scope.id.toString();
-            $scope.mp4Url = videoUrl + '.mp4';
-            $scope.aviUrl = videoUrl + '.avi';
+            $scope.mp4Url = apiService.getVideoUrl($scope.camName, $scope.id, 'mp4');
+            $scope.aviUrl = apiService.getVideoUrl($scope.camName, $scope.id, 'avi');
 
         }
     ])
-    .controller('VidModalCtrl', ['$scope', '$log', 'config',
-        function($scope, $log, config) {
+    .controller('VidModalCtrl', ['$scope', '$log', 'apiService',
+        function($scope, $log, apiService) {
             $log.log('VidCtrl', $scope.id, $scope.camName);
-            var videoUrl = config.apiUrl + 'media/' + $scope.camName + '/' +
-                $scope.id.toString();
-            $scope.mp4Url = videoUrl + '.mp4';
-            $scope.aviUrl = videoUrl + '.avi';
 
+            $scope.mp4Url = apiService.getVideoUrl($scope.camName, $scope.id, 'mp4');
+            $scope.aviUrl = apiService.getVideoUrl($scope.camName, $scope.id, 'avi');
         }
     ]);

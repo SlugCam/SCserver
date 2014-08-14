@@ -19,6 +19,13 @@ angular.module('myApp')
         function($http, config) {
             var exports = {};
 
+            // type should be 'mp4' or 'avi'
+            exports.getVideoUrl = function (camName, vidId, type) {
+
+             return config.apiUrl + 'media/' + camName + '/' +
+                vidId.toString() + '.' + type;
+            };
+
             // Callback is called if successful with JS array of all message
             // objects.
             exports.getAllMessages = function(callback) {

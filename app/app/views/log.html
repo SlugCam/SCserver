@@ -1,7 +1,12 @@
 <div id="log-container">
     <div class="log-filters">
-        <button class="primary" ng-click="updateLog()">Update</button>
-        Filters
+
+        <my-video-player my-src="previewUrl"></my-video-player>
+
+        <p>
+        </p>
+
+        <h4>Filters</h4>
     </div>
 
     <div class="log-output">
@@ -21,6 +26,7 @@
                             <td>{{video.id}}</td>
                             <td>
                                 <a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a>
+                                <button ng-click="previewVideo(video.cam, video.id)">Preview</button>
                                 <button ng-click="openVideo(video.cam, video.id)">Play Video</button>
                             </td>
                         </tr>
@@ -53,6 +59,7 @@
                     </tbody>
                 </table>
             </tab>
+            <button class="primary pull-right" ng-click="updateLog()">Update Logs</button>
         </tabset>
     </div>
 </div>

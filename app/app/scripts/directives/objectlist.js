@@ -19,28 +19,32 @@ angular.module('myApp')
             }
         };
 
-    });
-/*
-    .directive('myObjectList', function() {
+    })
+    .directive('myVideoPlayer', function() {
         return {
+            restrict: 'E',
             replace: true,
             transclude: false,
             scope: {
-                data: '=data'
+                src: '&mySrc'
             },
-            template: '<class="dl-horizontal list-inline"></dl>',
+            template: '<div><img src="/images/video_poster.png" width="100%" /></div>',
             link: function(scope, element, attrs) {
-                element.empty();
-
-                Object.keys(scope.data).forEach(function (key) {
-                    console.log(key + ': ' + scope.data[key]);
-                    
-                    element.append($('<dt></dt>').text(key));
-                    element.append($('<dd></dd>').text(scope.data[key]));
+                scope.$watch('src()', function (newSrc) {
+                    console.log('New video source', newSrc);
+                    if (newSrc != '') {
+                        console.log('Go!')
+                        var vid = $('<video controls autoplay/>').attr('width', '100%');
+                        var src = $('<source />').attr({
+                            type: 'video/mp4',
+                            src: newSrc
+                        });
+                        vid.append(src);
+                        element.empty();
+                        vid.appendTo(element);
+                    }
                 });
-
             }
         };
 
     });
-    */
