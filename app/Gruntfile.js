@@ -1,4 +1,8 @@
 // Generated on 2014-07-31 using generator-angular 0.9.5
+//
+// 08-14-14: TODO Took filerev out of the pipeline because of problems with
+// dynamically needing images, could be worked around, or the dependency should
+// be removed.
 'use strict';
 
 // # Globbing
@@ -432,7 +436,7 @@ module.exports = function (grunt) {
     'cdnify',
     'cssmin',
     'uglify',
-    'filerev',
+    //'filerev',
     'usemin',
     'htmlmin'
   ]);
