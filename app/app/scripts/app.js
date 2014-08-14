@@ -17,9 +17,7 @@ angular
     'ngSanitize',
     'ngTouch',
     'leaflet-directive',
-    'ui.bootstrap',
-    'com.2fdevs.videogular',
-    'com.2fdevs.videogular.plugins.controls'
+    'ui.bootstrap'
   ])
   .config(function ($routeProvider) {
     $routeProvider
