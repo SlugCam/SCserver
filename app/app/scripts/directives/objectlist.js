@@ -28,13 +28,16 @@ angular.module('myApp')
             scope: {
                 src: '&mySrc'
             },
-            template: '<div><img src="/images/video_poster.png" width="100%" /></div>',
+            template: '<div><video poster="/images/video_poster.png" width="100%" /></div>',
             link: function(scope, element, attrs) {
                 scope.$watch('src()', function (newSrc) {
                     console.log('New video source', newSrc);
                     if (newSrc != '') {
                         console.log('Go!')
-                        var vid = $('<video controls autoplay/>').attr('width', '100%');
+                        var vid = $('<video controls autoplay/>').attr({
+                            'width': '100%',
+                            'poster': '/images/video_poster.png'
+                        });
                         var src = $('<source />').attr({
                             type: 'video/mp4',
                             src: newSrc
