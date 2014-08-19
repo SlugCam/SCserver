@@ -37,24 +37,32 @@ app.get('/videos', function(req, res) {
     });
 });
 
+// ### Camera Routes
+
 app.get('/cameras', function(req, res) {
     db.getCameras(function(data) {
         res.json(data);
     });
 });
+
 app.get('/cameras/:name', function(req, res) {
     db.getCamera(req.params.name, function (data) {
         res.json(data);
     });
 });
 
+app.post('/cameras/:name', function(req, res) {
+    console.dir(req);
+});
 
+/*
 app.use('/media', function(req, res, next) {
     if (req.query.download) {
 
     }
     next();
 });
+*/
 
 
 // Starts the server on the port number of the argument

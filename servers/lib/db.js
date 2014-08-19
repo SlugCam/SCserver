@@ -69,11 +69,36 @@ exports.getCameras = function(cb) {
 };
 
 exports.getCamera = function(name, cb) {
-    db.collection('cameras').findOne({name: name}, function(err, result) {
+    db.collection('cameras').findOne({
+        name: name
+    }, function(err, result) {
         if (err) throw err;
         cb(result);
     });
 };
+
+// Takes a camera name and an object with settings to set, creates a new camera
+// if the camera name does not exist.
+exports.updateCamera = function(camName, settings, callback) {
+    db.collection('cameras').update({
+        name: camName,
+    }, {
+        $set: settings
+    }, {
+        upsert: true
+    }, function(err, count) {
+        if (callback) {
+            callback(err, count);
+        } else {
+            if (err) {
+                log.error('error marking video as uploaded', err);
+            } else {
+                log.info(camName + ' updated');
+            }
+        }
+    });
+};
+
 
 // Video Functions
 // ---------------
