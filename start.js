@@ -21,8 +21,12 @@ var config = require('./config'),
 
 // Message
 // -------
+console.log('SlugCam');
+console.log('=======');
 console.log('Note, this start script also starts a static server for the angular app.');
 console.log('To build the app go to the app directory and run `grunt build`.');
+console.log('\nNote that this app is dependent on ffmpeg (tested v2.2) and mongod (tested v2.6.1)');
+console.log('Errors have been encountered using older versions of these packages (which are still in some package managers).');
 
 // Script
 // ------
