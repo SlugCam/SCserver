@@ -21,13 +21,20 @@ exports.setConfig = function(config, logger) {
 // -----------------
 
 // TODO success/failure callback and verification of input
-exports.storeMessage = function(message) {
+// TODO check callback
+exports.storeMessage = function(message, callback) {
     // Check if camera is registered
+
     db.collection('mstore').insert(message, function(err, result) {
-        if (err) {
-            log.error('message not stored: ', err);
+        if (callback) {
+            callback(err);
         } else {
-            log.trace('message store successful');
+            if (err) {
+                log.error('message not stored: ', err);
+
+            } else {
+                log.trace('message store successful');
+            }
         }
     });
 
