@@ -15,3 +15,18 @@ A storage API exists in `db.js` that requires to following major functions:
 3. Video Functions
 
 *TODO:* Better names, define rest.
+
+Data Models
+-----------
+
+### Camera
+
+```
+{
+    name: camera_name
+    lat: camera_latitude
+    lng: camera_longitude
+    lastMessage: datetime
+    lastVideo: datetime
+}
+```

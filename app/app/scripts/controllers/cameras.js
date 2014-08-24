@@ -51,7 +51,7 @@ angular.module('myApp')
             });
 
             $scope.saveLocation = function() {
-                apiService.saveCameraLocation({
+                apiService.saveCameraLocation($scope.camera.name, {
                     lat: $scope.markers.cam.lat,
                     lng: $scope.markers.cam.lng
                 });

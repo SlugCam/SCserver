@@ -20,10 +20,9 @@ angular.module('myApp')
             var exports = {};
 
             // type should be 'mp4' or 'avi'
-            exports.getVideoUrl = function (camName, vidId, type) {
-
-             return config.apiUrl + 'media/' + camName + '/' +
-                vidId.toString() + '.' + type;
+            exports.getVideoUrl = function(camName, vidId, type) {
+                return config.apiUrl + 'media/' + camName + '/' +
+                    vidId.toString() + '.' + type;
             };
 
             // Callback is called if successful with JS array of all message
@@ -42,6 +41,10 @@ angular.module('myApp')
 
             exports.getCamera = function(camName, callback) {
                 $http.get(config.apiUrl + 'cameras/' + camName).success(callback);
+            };
+
+            exports.saveCameraLocation = function(camName, loc, callback) {
+                $http.post(config.apiUrl + 'cameras/' + camName, loc).success(callback);
             };
 
             return exports;
