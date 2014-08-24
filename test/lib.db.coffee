@@ -61,12 +61,14 @@ describe 'db library functional tests', ->
     # 
     # #### Message Functions
     describe 'message functions', ->
-        it 'should 1', (done) ->
-            db.storeMessage {'a':1}, ->
-                db.getMessages (data)->
-                    done()
+        it 'storing a message object should cause the messages returned to have
+            one object', (done) ->
+                db.storeMessage {'a':1}, ->
+                    db.getMessages (data)->
+                        data.length.should.eql 1
+                        done()
 
-        it 'should 2', (done) ->
+        it 'storing two message objects and retrieving them', (done) ->
             db.storeMessage({'b':2})
             db.getMessages (data) ->
                 done()
