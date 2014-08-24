@@ -58,7 +58,10 @@ app.get('/cameras/:name', function(req, res) {
 
 app.post('/cameras/:name', function(req, res) {
     log.info('update camera with', req.body);
-    res.end();
+    db.updateCamera(req.params.name, req.body, function(error) {
+        //TODO should transmit error
+        res.end();
+    });
 });
 
 /*
