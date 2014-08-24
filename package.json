@@ -7,6 +7,7 @@
     "start": "node start.js --save-logs | bunyan -l 20 -o long",
     "repl": "node repl.js",
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --require should",
+    "watch-tests": "mocha --watch --compilers coffee:coffee-script/register --reporter spec --require should",
     "doc": "groc",
     "startd": "forever start start.js --save-logs",
     "logd": "tail -f _logs/SWEETnet.log | node_modules/.bin/bunyan",
@@ -29,17 +30,18 @@
     "should": "^4.0.4"
   },
   "dependencies": {
-    "mongoskin": "^1.4.4",
-    "colors": "^0.6.2",
-    "has-ansi": "^0.1.0",
-    "strip-ansi": "^0.3.0",
-    "shelljs": "^0.3.0",
+    "body-parser": "^1.6.5",
     "bunyan": "^0.23.1",
-    "serve-static": "^1.4.1",
+    "colors": "^0.6.2",
     "connect": "^3.1.0",
-    "minimist": "^0.2.0",
-    "forever": "^0.11.1",
     "express": "^4.7.2",
-    "mkdirp": "^0.5.0"
+    "forever": "^0.11.1",
+    "has-ansi": "^0.1.0",
+    "minimist": "^0.2.0",
+    "mkdirp": "^0.5.0",
+    "mongoskin": "^1.4.4",
+    "serve-static": "^1.4.1",
+    "shelljs": "^0.3.0",
+    "strip-ansi": "^0.3.0"
   }
 }

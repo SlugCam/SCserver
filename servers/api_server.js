@@ -9,10 +9,12 @@ var url = require('url');
 var db = require('./lib/db');
 var log = null;
 var path = require('path');
+var bodyParser = require('body-parser');
 
 var express = require('express');
 var app = express();
 
+// Run on all requests
 app.use(function(req, res, next) {
     var uri = url.parse(req.url).pathname;
     log.info('request for ' + uri);
@@ -21,6 +23,8 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
     next();
 });
+
+app.use(bodyParser.json({type:'*/json'}));
 
 
 // Routes
@@ -52,7 +56,8 @@ app.get('/cameras/:name', function(req, res) {
 });
 
 app.post('/cameras/:name', function(req, res) {
-    console.dir(req);
+    log.info('update camera with', req.body);
+    res.end();
 });
 
 /*

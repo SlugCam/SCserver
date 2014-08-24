@@ -75,6 +75,7 @@ exports.getCameras = function(cb) {
     });
 };
 
+
 exports.getCamera = function(name, cb) {
     db.collection('cameras').findOne({
         name: name
