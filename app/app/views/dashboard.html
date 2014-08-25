@@ -1,1 +1,11 @@
-<leaflet defaults="defaults" width="100%" height="340px"></leaflet>
+<leaflet markers="markers" defaults="defaults" width="100%" height="340px"></leaflet>
+<div class="alert alert-danger" role="alert"
+                                ng-show="camerasWithoutLocation.length > 0">
+    <h4>The following cameras do not have locations associated with them and will
+    not be diplayed:</h4>
+    <ul>
+        <li ng-repeat="camera in camerasWithoutLocation">
+            <a ng-href="#/cameras/{{camera.name}}">{{camera.name}}</a>
+        </li>
+    </ul>
+</div>

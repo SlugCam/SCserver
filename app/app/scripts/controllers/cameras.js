@@ -55,6 +55,8 @@ angular.module('myApp')
                     lat: $scope.markers.cam.lat,
                     lng: $scope.markers.cam.lng
                 });
+                // TODO should check for success
+                $scope.locationNotSet = false;
             };
 
         }
