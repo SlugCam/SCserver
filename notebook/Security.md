@@ -1,2 +1,0 @@
-- DB Security and credentials
-- Network security
