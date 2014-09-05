@@ -56,8 +56,11 @@ exports.storeMessage = function(message, callback) {
     }
 };
 
-// Returns an array of all messages
-exports.getMessages = function(cb) {
+// Returns an array of all messages. Accepted options include:
+// 
+// - page: page number, starting at one
+// - size: page sizeoptions, 
+exports.getMessages = function(options, cb) {
     db.collection('mstore').find().toArray(function(err, result) {
         if (err) throw err;
         log.trace('get messages success');

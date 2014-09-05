@@ -3,6 +3,11 @@
 //
 // Contains the server for the external facing http server that application
 // programmers can interface with.
+//
+// References:
+//
+// - Pagination technique: http://blog.mongodirector.com/implementing-pagination-with-mongodb-express-js-slush/
+//
 
 //var http = require('http');
 var url = require('url');
@@ -30,8 +35,14 @@ app.use(bodyParser.json({type:'*/json'}));
 
 // Routes
 // ------
+
 app.get('/messages', function(req, res) {
-    db.getMessages(function(data) {
+    var options = {};
+
+    options.page = req.query.page || 1,
+    options.size = req.query.size || 20;
+
+    db.getMessages(options, function(data) {
         res.json(data);
     });
 });
