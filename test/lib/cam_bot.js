@@ -40,9 +40,9 @@ CamBot.prototype.sendVideo = function(id) {
         header.fill(0);
         header.write(camName, 'ascii');
         var cursor = camName.length + 1;
-        header.writeUInt32BE(id, cursor);
+        header.writeUInt32LE(id, cursor);
         cursor += 4;
-        header.writeUInt32BE(videobuffer.length, cursor);
+        header.writeUInt32LE(videobuffer.length, cursor);
 
         console.log(header);
         console.log(videobuffer);

@@ -181,7 +181,7 @@ VideoProtocol.prototype._downloadCompletionFunctionFactory = function() {
         exec('ffmpeg -i ' + outPath + '.avi ' + outPath + '.mp4',
             function(error, stdout, stderr) {
                 log.trace('ffmpeg: ' + stdout);
-                log.error('ffmpeg: ' + stderr);
+                log.trace('ffmpeg: ' + stderr);
                 if (error !== null) {
                     log.error('ffmpeg exited with error code: ' + error);
                 }
@@ -234,7 +234,7 @@ function parseInt(buff) {
     };
     if (buff.length >= 4) {
         ret.success = true;
-        ret.value = buff.readUInt32BE(0);
+        ret.value = buff.readUInt32LE(0);
         ret.buffer = buff.slice(4);
     }
     return ret;
