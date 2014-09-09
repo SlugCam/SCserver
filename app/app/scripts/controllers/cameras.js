@@ -59,5 +59,24 @@ angular.module('myApp')
                 $scope.locationNotSet = false;
             };
 
+            $scope.getHTML5Location = function() {
+                navigator.geolocation.getCurrentPosition(
+                    function(p) {
+                        $scope.markers.cam.lat = p.coords.latitude;
+                        $scope.markers.cam.lng = p.coords.longitude;
+                        $scope.center = {
+                            lat: p.coords.latitude,
+                            lng: p.coords.longitude,
+                            zoom: 15
+                        };
+
+                    }, function(error) {
+                        alert('Geolocation error')
+                    }, {
+                        enableHighAccuracy: true
+                    });
+
+            };
+
         }
     ]);
