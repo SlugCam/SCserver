@@ -93,6 +93,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.camName = parseResults.value;
         this.buff = parseResults.buffer;
+	log.info('CamName: ' + this.camName);
     }
 
     if (continueScan && !this.vidId) {
@@ -101,6 +102,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.vidId = parseResults.value;
         this.buff = parseResults.buffer;
+	log.info('VidId: ' + this.vidId);
     }
 
     if (continueScan && !this.vidLength) {
@@ -109,6 +111,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.vidLength = parseResults.value;
         this.buff = parseResults.buffer;
+	log.info('VidLength: ' + this.vidLength);
     }
 
     if (continueScan && !this.fileStream) {
