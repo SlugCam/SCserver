@@ -76,7 +76,7 @@ VideoProtocol.prototype._write = function(chunk, encoding, callback) {
 // buffer, while referencing the current state of our stream, either reading
 // meta data or piping the video data into a file.
 VideoProtocol.prototype._scan = function() {
-    log.trace('VideoProtocol#scan called, buffer length:', this.buff.length, 'buffer:', this.buff);
+    //log.trace('VideoProtocol#scan called, buffer length:', this.buff.length, 'buffer:', this.buff);
     // Continue scan starts as false, because we will scan again only if we
     // are able to successfully parse a value at some point (at which point we
     // will set it to true). If we never successfully parse a value, we know we
@@ -127,7 +127,7 @@ VideoProtocol.prototype._scan = function() {
     }
     if (continueScan) {
         // Everything is setup, so just write to the file stream
-        log.trace('scan pushing to data to file stream');
+        //log.trace('scan pushing to data to file stream');
         if (this.remainingData <= this.buff.length) {
             log.trace('all data for file has been received');
             // We are done
@@ -144,8 +144,8 @@ VideoProtocol.prototype._scan = function() {
 
             // continueScan is still true here like it should be
         } else {
-            log.trace('pushing data to file, not complete; remaining',
-                this.remainingData, ', bufflength:', this.buff.length);
+            //log.trace('pushing data to file, not complete; remaining',
+            //    this.remainingData, ', bufflength:', this.buff.length);
             // There is more 
             this.remainingData = this.remainingData - this.buff.length;
             this.fileStream.write(this.buff);
