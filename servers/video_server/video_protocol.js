@@ -136,7 +136,9 @@ VideoProtocol.prototype._scan = function() {
             this.fileStream.end();
             // Reset everything, noting that these are all the conditions to
             // restart the if chain
-            this.camName = null;
+
+	    // Commented out to only scan for camera name once
+            // this.camName = null;
             this.vidId = null;
             this.vidLength = null;
             this.fileStream = null;
