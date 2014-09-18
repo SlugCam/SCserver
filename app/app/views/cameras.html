@@ -10,8 +10,8 @@
     <tbody>
         <tr ng-repeat="camera in cameras">
           <td><a ng-href="#/cameras/{{camera.name}}">{{camera.name}}</a></td>
-            <td>{{camera.lastMessage | date}}</td>
-            <td>{{camera.lastVideo | date}}</td>
+            <td>{{camera.lastMessage | date : 'medium' }}</td>
+            <td>{{camera.lastVideo | date : 'medium' }}</td>
         </tr>
     </tbody>
 </table>
