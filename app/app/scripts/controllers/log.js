@@ -8,12 +8,19 @@
  * Controller of the sweetappApp
  */
 angular.module('myApp')
-    .controller('LogCtrl', ['$scope', 'openVideoModal', 'apiService',
-        function($scope, openVideoModal, apiService) {
+    .controller('LogCtrl', ['$scope', 'openVideoModal', 'apiService', '$location',
+        function($scope, openVideoModal, apiService, $location) {
 
             $scope.previewUrl = '';
 
             $scope.messagePager = {
+                totalItems: 0,
+                pageSize: 10,
+                page: 1,
+                pagerSize: 10
+            }
+
+            $scope.videoPager = {
                 totalItems: 0,
                 pageSize: 10,
                 page: 1,
@@ -27,17 +34,23 @@ angular.module('myApp')
                 });
             }
 
+            function updateVideos() {
+                apiService.getAllVideos($scope.messagePager.page, $scope.messagePager.pageSize, function(data) {
+                    $scope.videos = data.data;
+                    $scope.videoPager.totalItems = data.pagination.count;
+                });
+            }
+
             $scope.updateLog = function() {
                 updateMessages();
-                apiService.getAllVideos(function(data) {
-                    $scope.videos = data;
-                });
-
+                updateVideos();
             };
 
             $scope.mPageChanged = function() {
-                //console.log('page: ' + $scope.messagePager.page);
                 updateMessages();
+            };
+            $scope.vPageChanged = function() {
+                updateVideos();
             };
 
             $scope.updateLog();

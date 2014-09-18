@@ -31,9 +31,10 @@ angular.module('myApp')
                 $http.get(config.apiUrl + 'messages?page=' + page + '&size=' + pageSize).success(callback);
             };
 
-            exports.getAllVideos = function(callback) {
-                $http.get(config.apiUrl + 'videos').success(callback);
+            exports.getAllVideos = function(page, pageSize, callback) {
+                $http.get(config.apiUrl + 'videos?page=' + page + '&size=' + pageSize).success(callback);
             };
+
 
             exports.getAllCameras = function(callback) {
                 $http.get(config.apiUrl + 'cameras').success(callback);

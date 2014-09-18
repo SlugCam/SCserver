@@ -12,6 +12,15 @@
     <div class="log-output">
         <tabset>
             <tab heading="Video Log">
+                <pagination total-items="videoPager.totalItems"
+                            items-per-page="videoPager.pageSize"
+                            ng-change="vPageChanged()" 
+                            ng-model="videoPager.page" 
+                            max-size="videoPager.pagerSize" 
+                            class="pagination-sm" 
+                            boundary-links="true" 
+                            rotate="false">
+                </pagination>
                 <table>
                     <thead>
                         <tr>
@@ -27,9 +36,11 @@
                             <td>{{video.id}}</td>
                             <td>{{video.uploadTime | date : 'medium'}}</td>
                             <td>
-                                <a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a>
                                 <button ng-click="previewVideo(video.cam, video.id)">Preview</button>
-                                <button ng-click="openVideo(video.cam, video.id)">Play Video</button>
+                                <button ng-click="openVideo(video.cam,
+                                  video.id)">Open in Modal</button>
+                                <a ng-href="#/video/{{video.cam}}/{{video.id}}">Open
+                                Video</a>
                             </td>
                         </tr>
                     </tbody>

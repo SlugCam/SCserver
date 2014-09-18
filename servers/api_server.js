@@ -37,10 +37,11 @@ app.use(bodyParser.json({type:'*/json'}));
 // ------
 
 app.get('/messages', function(req, res) {
-    var options = {};
+    var options = {
+        page: req.query.page || 1,
+        size: req.query.size || 20
+    };
 
-    options.page = req.query.page || 1,
-    options.size = req.query.size || 20;
 
     db.getMessages(options, function(data) {
         res.json(data);
@@ -48,10 +49,10 @@ app.get('/messages', function(req, res) {
 });
 
 app.get('/videos', function(req, res) {
-    var options = {};
-
-    options.page = req.query.page || 1,
-    options.size = req.query.size || 20;
+    var options = {
+        page: req.query.page || 1,
+        size: req.query.size || 20
+    };
 
     db.getUploadedVideos(options, function(data) {
         res.json(data);

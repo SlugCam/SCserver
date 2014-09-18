@@ -16,7 +16,36 @@ exports.setConfig = function(config, logger) {
     log = logger;
 };
 
+// Wrapper function for getting a list of data from the database
+function returnPaginatedList(options, cb, collection, sort, query) {
+    var skip = (options.page - 1) * options.size;
 
+    db.collection(collection).count(query, function(err, count) {
+        if (err) throw err;
+
+        db.collection(collection).find(query, null, {
+            limit: options.size,
+            skip: skip,
+            sort: sort
+        }).toArray(function(err, result) {
+
+            if (err) throw err;
+
+            log.trace('get messages success');
+
+            cb({
+                pagination: {
+                    //current: options.page,
+                    count: count,
+                    //size: options.size
+                },
+                data: result
+            });
+                    
+        });
+
+    });
+}
 // Message Functions
 // -----------------
 
@@ -56,37 +85,16 @@ exports.storeMessage = function(message, callback) {
     }
 };
 
+
 // Returns an array of all messages. Accepted options include:
 // 
 // - page: page number, starting at one
 // - size: page sizeoptions, 
 exports.getMessages = function(options, cb) {
-    var skip = (options.page - 1) * options.size;
-
-    db.collection('mstore').count({}, function(err, count) {
-        if (err) throw err;
-
-        db.collection('mstore').find({}, null, {
-            limit: options.size,
-            skip: skip
-        }).toArray(function(err, result) {
-
-            if (err) throw err;
-
-            log.trace('get messages success');
-
-            cb({
-                pagination: {
-                    current: options.page,
-                    count: count,
-                    size: options.size
-                },
-                data: result
-            });
-                    
-        });
-
-    });
+    var sort = {
+        'time': -1
+    }
+    returnPaginatedList(options, cb, 'mstore', sort);
 };
 
 // Camera Functions
@@ -181,12 +189,9 @@ exports.setVideoUploaded = function(camName, vidId, callback) {
 // Used by API server
 exports.getUploadedVideos = function(options, callback) {
 
-    db.collection('videos').find({
-        videoUploaded: true
-    }).toArray(function(err, result) {
-        if (err) throw err;
-        log.trace('get uploaded videos success');
-        callback(result);
-    });
+    var sort = { 'uploadTime': -1 },
+        query = { videoUploaded: true };
+
+    returnPaginatedList(options, callback, 'videos', sort, query);
 
 };
