@@ -36,6 +36,15 @@
                 </table>
             </tab>
             <tab heading="Message Log">
+                <pagination total-items="messagePager.totalItems"
+                            items-per-page="messagePager.pageSize"
+                            ng-change="mPageChanged()" 
+                            ng-model="messagePager.page" 
+                            max-size="messagePager.pagerSize" 
+                            class="pagination-sm" 
+                            boundary-links="true" 
+                            rotate="false">
+                </pagination>
                 <table class="log-master-table">
                     <thead>
                         <tr>

@@ -48,7 +48,12 @@ app.get('/messages', function(req, res) {
 });
 
 app.get('/videos', function(req, res) {
-    db.getUploadedVideos(function(data) {
+    var options = {};
+
+    options.page = req.query.page || 1,
+    options.size = req.query.size || 20;
+
+    db.getUploadedVideos(options, function(data) {
         res.json(data);
     });
 });

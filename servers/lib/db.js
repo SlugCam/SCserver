@@ -61,10 +61,31 @@ exports.storeMessage = function(message, callback) {
 // - page: page number, starting at one
 // - size: page sizeoptions, 
 exports.getMessages = function(options, cb) {
-    db.collection('mstore').find().toArray(function(err, result) {
+    var skip = (options.page - 1) * options.size;
+
+    db.collection('mstore').count({}, function(err, count) {
         if (err) throw err;
-        log.trace('get messages success');
-        cb(result);
+
+        db.collection('mstore').find({}, null, {
+            limit: options.size,
+            skip: skip
+        }).toArray(function(err, result) {
+
+            if (err) throw err;
+
+            log.trace('get messages success');
+
+            cb({
+                pagination: {
+                    current: options.page,
+                    count: count,
+                    size: options.size
+                },
+                data: result
+            });
+                    
+        });
+
     });
 };
 
@@ -158,7 +179,8 @@ exports.setVideoUploaded = function(camName, vidId, callback) {
 };
 
 // Used by API server
-exports.getUploadedVideos = function(callback) {
+exports.getUploadedVideos = function(options, callback) {
+
     db.collection('videos').find({
         videoUploaded: true
     }).toArray(function(err, result) {
@@ -166,4 +188,5 @@ exports.getUploadedVideos = function(callback) {
         log.trace('get uploaded videos success');
         callback(result);
     });
+
 };

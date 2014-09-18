@@ -27,8 +27,8 @@ angular.module('myApp')
 
             // Callback is called if successful with JS array of all message
             // objects.
-            exports.getAllMessages = function(callback) {
-                $http.get(config.apiUrl + 'messages').success(callback);
+            exports.getAllMessages = function(page, pageSize, callback) {
+                $http.get(config.apiUrl + 'messages?page=' + page + '&size=' + pageSize).success(callback);
             };
 
             exports.getAllVideos = function(callback) {

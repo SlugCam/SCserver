@@ -10,15 +10,36 @@
 angular.module('myApp')
     .controller('LogCtrl', ['$scope', 'openVideoModal', 'apiService',
         function($scope, openVideoModal, apiService) {
+
             $scope.previewUrl = '';
-            $scope.updateLog = function() {
-                apiService.getAllMessages(function(data) {
-                    $scope.messages = data;
+
+            $scope.messagePager = {
+                totalItems: 0,
+                pageSize: 10,
+                page: 1,
+                pagerSize: 10
+            }
+
+            function updateMessages() {
+                apiService.getAllMessages($scope.messagePager.page, $scope.messagePager.pageSize, function(data) {
+                    $scope.messages = data.data;
+                    $scope.messagePager.totalItems = data.pagination.count;
                 });
+            }
+
+            $scope.updateLog = function() {
+                updateMessages();
                 apiService.getAllVideos(function(data) {
                     $scope.videos = data;
                 });
+
             };
+
+            $scope.mPageChanged = function() {
+                //console.log('page: ' + $scope.messagePager.page);
+                updateMessages();
+            };
+
             $scope.updateLog();
 
             $scope.openVideo = openVideoModal;
