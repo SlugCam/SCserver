@@ -17,13 +17,15 @@
                         <tr>
                             <th>Camera Name</th>
                             <th>Video ID</th>
+                            <th>Upload Time</th>
                             <th>View Link</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="video in videos">
-                            <td>{{video.cam}}</td>
+                            <td>{{video.cam }}</td>
                             <td>{{video.id}}</td>
+                            <td>{{video.uploadTime | date : 'medium'}}</td>
                             <td>
                                 <a ng-href="#/video/{{video.cam}}/{{video.id}}">Play Video</a>
                                 <button ng-click="previewVideo(video.cam, video.id)">Preview</button>

@@ -123,6 +123,9 @@ exports.setVideoUploaded = function(camName, vidId, callback) {
     }, {
         $set: {
             videoUploaded: true
+        },
+        $currentDate: {
+            uploadTime: true
         }
     }, {
         upsert: true
