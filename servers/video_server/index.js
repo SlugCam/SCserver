@@ -34,7 +34,11 @@ var server = net.createServer(function(c) { //'connection' listener
         log.info('Video', vidId, 'received from', camName);
         // Write ack, mark db
         db.setVideoUploaded(camName, vidId);
-	c.write(vidId + '\r');
+        try {
+        c.write(vidId + '\r');
+        } catch (e) {
+            log.error('error in sending ack for video', e);
+        }
     });
     c.pipe(videoWriter);
 
