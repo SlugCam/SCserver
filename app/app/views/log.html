@@ -27,6 +27,8 @@
                             <th>Camera Name</th>
                             <th>Video ID</th>
                             <th>Upload Time</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
                             <th>View Link</th>
                         </tr>
                     </thead>
@@ -35,6 +37,8 @@
                             <td>{{video.cam }}</td>
                             <td>{{video.id}}</td>
                             <td>{{video.uploadTime | date : 'medium'}}</td>
+                            <td>{{video.startTime | date : 'medium'}}</td>
+                            <td>{{video.endTime | date : 'medium'}}</td>
                             <td>
                                 <button ng-click="previewVideo(video.cam, video.id)">Preview</button>
                                 <button ng-click="openVideo(video.cam,

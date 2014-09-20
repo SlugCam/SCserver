@@ -93,7 +93,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.camName = parseResults.value;
         this.buff = parseResults.buffer;
-	log.info('CamName: ' + this.camName);
+        log.info('CamName: ' + this.camName);
     }
 
     if (continueScan && !this.vidId) {
@@ -102,7 +102,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.vidId = parseResults.value;
         this.buff = parseResults.buffer;
-	log.info('VidId: ' + this.vidId);
+        log.info('VidId: ' + this.vidId);
     }
 
     if (continueScan && !this.vidLength) {
@@ -111,7 +111,7 @@ VideoProtocol.prototype._scan = function() {
         continueScan = parseResults.success;
         this.vidLength = parseResults.value;
         this.buff = parseResults.buffer;
-	log.info('VidLength: ' + this.vidLength);
+        log.info('VidLength: ' + this.vidLength);
     }
 
     if (continueScan && !this.fileStream) {
@@ -137,7 +137,7 @@ VideoProtocol.prototype._scan = function() {
             // Reset everything, noting that these are all the conditions to
             // restart the if chain
 
-	    // Commented out to only scan for camera name once
+            // Commented out to only scan for camera name once
             // this.camName = null;
             this.vidId = null;
             this.vidLength = null;
@@ -167,6 +167,7 @@ VideoProtocol.prototype._scan = function() {
 
 // This function returns a function to be called after the video is complete.
 // This returned function, moves the 
+// Will emit an info object with cam, id, and path (without file extension)
 VideoProtocol.prototype._downloadCompletionFunctionFactory = function() {
     var camName = this.camName;
     var vidId = this.vidId;
@@ -181,8 +182,22 @@ VideoProtocol.prototype._downloadCompletionFunctionFactory = function() {
         mkdirp(camDir);
         var outPath = path.join(camDir, vidId.toString());
         // move file to output directory
-        fs.renameSync(tmpPath, outPath + '.avi');
+        fs.rename(tmpPath, outPath + '.avi', function(err) {
+            if (err) {
+                log.error('Error moving received video from temporary directory', err);
+            } else {
+                ee.emit('videoReceived', {
+                    cam: camName,
+                    id: vidId,
+                    path: outPath
+                });
+            }
+
+        });
+
+        // Done in index.js now
         // start conversion, when done mark as converted
+        /*
         exec('ffmpeg -i ' + outPath + '.avi ' + outPath + '.mp4',
             function(error, stdout, stderr) {
                 log.trace('ffmpeg: ' + stdout);
@@ -191,8 +206,9 @@ VideoProtocol.prototype._downloadCompletionFunctionFactory = function() {
                     log.error('ffmpeg exited with error code: ' + error);
                 }
             });
+            */
         // Emit our video received event
-        ee.emit('videoReceived', camName, vidId);
+
     };
 };
 

@@ -186,6 +186,32 @@ exports.setVideoUploaded = function(camName, vidId, callback) {
     });
 };
 
+// endTime startTime js dates
+exports.setVideoConverted = function(camName, vidId, startTime, endTime, callback) {
+    db.collection('videos').update({
+        cam: camName,
+        id: vidId
+    }, {
+        $set: {
+            videoConverted: true,
+            startTime: startTime,
+            endTime: endTime
+        },
+    }, {
+        upsert: true
+    }, function(err, count) {
+        if (callback) {
+            callback(err, count);
+        } else {
+            if (err) {
+                log.error('error marking video as converted', err);
+            } else {
+                log.info(camName + '/' + vidId.toString() + ' set as converted');
+            }
+        }
+    });
+}
+
 // Used by API server
 exports.getUploadedVideos = function(options, callback) {
 
