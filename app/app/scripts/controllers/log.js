@@ -35,7 +35,7 @@ angular.module('myApp')
             }
 
             function updateVideos() {
-                apiService.getAllVideos($scope.messagePager.page, $scope.messagePager.pageSize, function(data) {
+                apiService.getAllVideos($scope.videoPager.page, $scope.videoPager.pageSize, function(data) {
                     $scope.videos = data.data;
                     $scope.videoPager.totalItems = data.pagination.count;
                 });
@@ -58,7 +58,7 @@ angular.module('myApp')
             $scope.openVideo = openVideoModal;
 
             $scope.previewVideo = function(camName, vidId) {
-                console.log('preview');
+                //console.log('preview');
                 $scope.previewUrl = apiService.getVideoUrl(camName, vidId, 'mp4');
             };
         }
