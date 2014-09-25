@@ -20,6 +20,7 @@ exports.setConfig = function(config, logger) {
 function returnPaginatedList(options, cb, collection, sort, query) {
     var skip = (options.page - 1) * options.size;
 
+
     db.collection(collection).count(query, function(err, count) {
         if (err) throw err;
 
@@ -94,7 +95,14 @@ exports.getMessages = function(options, cb) {
     var sort = {
         'time': -1
     }
-    returnPaginatedList(options, cb, 'mstore', sort);
+    query = {};
+    if (options.before) {
+        query.time = { $lt : options.before };
+    }
+    if (options.after) {
+        query.time = { $gt : options.after };
+    }
+    returnPaginatedList(options, cb, 'mstore', sort, query);
 };
 
 // Camera Functions
@@ -216,8 +224,16 @@ exports.setVideoConverted = function(camName, vidId, startTime, endTime, callbac
 exports.getUploadedVideos = function(options, callback) {
 
     var sort = { 'uploadTime': -1 },
-        query = { videoUploaded: true };
+        query = { 
+            videoUploaded: true,
+        };
+        if (options.before) {
+            query.startTime = { $lt : options.before };
+        }
+        if (options.after) {
+            query.endTime = { $gt : options.after };
+        }
 
-    returnPaginatedList(options, callback, 'videos', sort, query);
+        returnPaginatedList(options, callback, 'videos', sort, query);
 
 };

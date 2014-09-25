@@ -40,7 +40,7 @@ CamBot.prototype.sendVideo = function(id) {
         header.fill(0);
         header.write(camName, 'ascii');
         var cursor = camName.length + 1;
-        header.writeUInt32LE(id, cursor);
+        header.writeUInt32LE(Math.floor((new Date()).getTime() / 1000), cursor);
         cursor += 4;
         header.writeUInt32LE(videobuffer.length, cursor);
 
@@ -77,6 +77,16 @@ CamBot.prototype.ping = function(count, delay) {
     setTimeout(function() {
         me.ping(count - 1, delay);
     }, delay);
+};
+
+CamBot.prototype.sendTag = function() {
+    this.send([{
+        id: 0,
+        cam: this.name,
+        time: Math.floor((new Date()).getTime() / 1000),
+        type: 'tag',
+        data: {message: 'Human detected.'}
+    }]);
 };
 
 // This function will send each object in the argument array to the server

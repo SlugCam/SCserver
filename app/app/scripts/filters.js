@@ -7,8 +7,10 @@ angular.module('myApp')
             };
         }
     ])
+    /*
     .filter('fromUnixTime', function() {
         return function(unixTime) {
             return (new Date(unixTime * 1000)).toLocaleString();
         };
     });
+    */

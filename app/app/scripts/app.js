@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'leaflet-directive',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'daterangepicker'
   ])
   .config(function ($routeProvider) {
     $routeProvider

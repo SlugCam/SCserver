@@ -12,6 +12,15 @@
     }
   }
 }
+#dashboard-container {
+  @extend .row;
+  .dashboard-camera-list {
+    @extend .col-md-6;
+  }
+  .dashboard-inspector {
+    @extend .col-md-6;
+  }
+}
 
 #camera-config-container {
   @extend .row;

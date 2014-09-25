@@ -35,6 +35,10 @@ var server = net.createServer(function(c) { // 'connection' listener
         .on('data', function(data) {
             log.info('object received');
             log.trace(data);
+            // TODO throw error if no time
+            if (data.time) {
+                data.time = new Date(data.time * 1000);
+            }
             db.storeMessage(data);
 
             // Send test ack, should be on callback from db

@@ -9,18 +9,30 @@
  * TODO need testing of bounds fitting in the cases with 1 or no markers flagged
  */
 angular.module('myApp')
-    .controller('DashCtrl', ['$scope', 'apiService', 'leafletData',
+    .controller('DashCtrl', ['$scope', 'apiService', 'leafletData', 'leafletEvents',
 
-        function($scope, apiService, leafletData) {
+        function($scope, apiService, leafletData, leafletEvents) {
+            var hasMarkers = false;
 
+            $scope.messages = [];
+            $scope.videos = [];
             $scope.markers = {};
             $scope.camerasWithoutLocation = [];
-
+            $scope.dataHash = {};
+            $scope.selectedCamera = '';
+            $scope.previewUrl = '';
+            $scope.previewVideo = function(camName, vidId) {
+                //console.log('preview');
+                $scope.previewUrl = apiService.getVideoUrl(camName, vidId, 'mp4');
+                console.log('preview', $scope.previewUrl);
+            };
             apiService.getAllCameras(function(data) {
                 $scope.cameras = data;
 
                 data.forEach(function(val) {
+
                     if (val.lat !== undefined && val.lng !== undefined) {
+                        hasMarkers = true;
                         $scope.markers[val.name] = {
                             message: 'Camera: ' + val.name,
                             draggable: false,
@@ -32,8 +44,10 @@ angular.module('myApp')
                         $scope.camerasWithoutLocation.push(val);
                     }
                 });
-                console.log($scope.camerasWithoutLocation.length);
-                $scope.fitMarkers();
+                //console.log($scope.camerasWithoutLocation.length);
+                if (hasMarkers) {
+                    $scope.fitMarkers();
+                }
             });
 
             // Check out:
@@ -54,5 +68,184 @@ angular.module('myApp')
                     map.fitBounds(getMarkerBounds().pad(0.5));
                 });
             };
+
+            // leaflet events handling
+            $scope.leafletEvents = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+
+            $scope.$on('leafletDirectiveMarker.click', function(event, args) {
+                //console.log(args.markerName);
+                $scope.selectedCamera = args.markerName;
+            });
+
+            $scope.$watch
+
+            // Date range picker
+            $scope.date = {
+                startDate: new Date(moment().subtract(1, 'hours')), //TODO: not efficient
+                endDate: new Date()
+            };
+            $scope.opts = {
+                ranges: {
+                    'Past Hour': [moment().subtract(1, 'hours'), moment()],
+                    'Past Day': [moment().subtract(1, 'days'), moment()],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()]
+                },
+                timePicker: true,
+
+            };
+            //Watch for date changes
+            $scope.$watch('date', function(newDate) {
+                console.log('New date set: ', newDate);
+                //TODO Should not rely on a constant
+                apiService.getAllMessages(1, 999, function(data) {
+                    $scope.messages = data.data;
+                    processData();
+                }, {
+                    before: $scope.date.endDate,
+                    after: $scope.date.startDate
+                });
+                //TODO Should not rely on a constant
+                apiService.getAllVideos(1, 999, function(data) {
+                    $scope.videos = data.data;
+                    processData();
+                }, {
+                    before: $scope.date.endDate,
+                    after: $scope.date.startDate
+                });
+                //processData();
+            }, false);
+
+
+            // TODO separate into two functions
+            function processData() {
+                var camHash = {};
+                // { camname: { videos, messages}}
+                $scope.messages.forEach(function(v) {
+                    var myEntry = camHash[v.cam] || {};
+                    if (myEntry.messages) {
+                        myEntry.messages.push(v);
+                    } else {
+                        myEntry.messages = [v];
+                    }
+                    camHash[v.cam] = myEntry;
+
+                });
+                $scope.videos.forEach(function(v) {
+                    var myEntry = camHash[v.cam] || {};
+                    if (myEntry.videos) {
+                        myEntry.videos.push(v);
+                    } else {
+                        myEntry.videos = [v];
+                    }
+                    camHash[v.cam] = myEntry;
+                });
+                $scope.dataHash = camHash;
+
+
+                // Set markers
+                /*
+                angular.forEach(camHash, function(value, key) {
+                    if ($scope.markers[key]) { // Only if a marker is on the map
+                        var message = 'Camera: ' + key;
+                        if (value.videos) {
+                            message += '<br>Videos: ' + value.videos.length;
+                        }
+                        if (value.messages) {
+                            message += '<br>Messages:' + value.messages.length;
+                        }
+                        $scope.markers[key].message = message;
+                    }
+                });
+                */
+                angular.forEach($scope.markers, function(value, key) {
+                    var message = 'Camera: ' + key;
+                    if ($scope.dataHash[key]) {
+                        if ($scope.dataHash[key].videos) {
+                            message += '<br>Videos: ' + $scope.dataHash[key].videos.length;
+                        }
+                        if ($scope.dataHash[key].messages) {
+                            message += '<br>Messages:' + $scope.dataHash[key].messages.length;
+                        }
+                    }
+                    $scope.markers[key].message = message;
+                });
+
+            }
+
         }
-    ]);
+    ])
+    .directive('activityBar', ['apiService', function(apiService) {
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: false,
+            scope: true,
+            template: '<div class="activity-bar"></div>',
+            link: function(scope, element, attrs) {
+                scope.$watch('dataHash[selectedCamera]', function(cam) {
+                    update();
+                }, true);
+                scope.$watch('selectedCamera', function(cam) {
+                    update();
+                });
+                function update() {
+                    var i,
+                        data = scope.dataHash[scope.selectedCamera],
+                        startTime = scope.date.startDate.getTime(),
+                        adjustedEndTime = scope.date.endDate.getTime() - startTime;
+
+                    element.empty();
+                    var videoBar = $('<div>').addClass('video-bar').appendTo(element);
+                    
+                    console.log('activityBar', scope.selectedCamera);
+                    console.dir(scope.messages);
+
+                    if (!data) return;
+
+                    if (data.videos) {
+                        data.videos.forEach(function (val) {
+                            console.dir(val);
+                            var vidAdjStart = (new Date(val.startTime)).getTime() - startTime,
+                                vidAdjEnd = (new Date(val.endTime)).getTime() - startTime,
+                                left = (vidAdjStart / adjustedEndTime),
+                                width = (vidAdjEnd / adjustedEndTime) - left;
+                            $('<div>')
+                                .addClass('video')
+                                .css({
+                                    left: left * 100 + '%',
+                                    width: width * 100 + '%'
+                                })
+                                .click(function () {
+                                    console.log('vidclick');
+                                    console.dir(val);
+                                    scope.previewVideo(val.cam, val.id);
+                                    //TODO hover, go away change
+                                })
+                                .appendTo(videoBar)
+                        })
+                    }
+                    if (data.messages) {
+                        data.messages.forEach(function (val) {
+                            console.dir(val);
+                            var tagAdjTime = (new Date(val.time)).getTime() - startTime,
+                                left = (tagAdjTime / adjustedEndTime),
+                                type = val.type == 'tag' ? 'tag' : 'message';
+                            $('<div>')
+                                .addClass(type)
+                                .css({
+                                    left: left * 100 + '%',
+                                })
+                                .appendTo(element)
+                        })
+                    }
+
+
+                }
+            }
+        };
+    }]);

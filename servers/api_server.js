@@ -39,7 +39,9 @@ app.use(bodyParser.json({type:'*/json'}));
 app.get('/messages', function(req, res) {
     var options = {
         page: req.query.page || 1,
-        size: req.query.size || 20
+        size: req.query.size || 20,
+        before: req.query.before ? new Date(req.query.before) : null,
+        after: req.query.after ? new Date(req.query.after) : null,
     };
 
 
@@ -51,7 +53,9 @@ app.get('/messages', function(req, res) {
 app.get('/videos', function(req, res) {
     var options = {
         page: req.query.page || 1,
-        size: req.query.size || 20
+        size: req.query.size || 20,
+        before: req.query.before ? new Date(req.query.before) : null,
+        after: req.query.after ? new Date(req.query.after) : null,
     };
 
     db.getUploadedVideos(options, function(data) {

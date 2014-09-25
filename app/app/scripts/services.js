@@ -27,12 +27,30 @@ angular.module('myApp')
 
             // Callback is called if successful with JS array of all message
             // objects.
-            exports.getAllMessages = function(page, pageSize, callback) {
-                $http.get(config.apiUrl + 'messages?page=' + page + '&size=' + pageSize).success(callback);
+            exports.getAllMessages = function(page, pageSize, callback, options) {
+                var url = config.apiUrl + 'messages?page=' + page + '&size=' + pageSize;
+                if (options) {
+                    if (options.before) {
+                        url += '&before=' + options.before.toISOString();
+                    }
+                    if (options.after) {
+                        url += '&after=' + options.after.toISOString();
+                    }
+                }
+                $http.get(url).success(callback);
             };
 
-            exports.getAllVideos = function(page, pageSize, callback) {
-                $http.get(config.apiUrl + 'videos?page=' + page + '&size=' + pageSize).success(callback);
+            exports.getAllVideos = function(page, pageSize, callback, options) {
+                var url = config.apiUrl + 'videos?page=' + page + '&size=' + pageSize;
+                if (options) {
+                if (options.before) {
+                    url += '&before=' + options.before.toISOString();
+                }
+                if (options.after) {
+                    url += '&after=' + options.after.toISOString();
+                }
+                }
+                $http.get(url).success(callback);
             };
 
 
