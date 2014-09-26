@@ -21,11 +21,17 @@ angular.module('myApp')
             $scope.dataHash = {};
             $scope.selectedCamera = '';
             $scope.previewUrl = '';
+
             $scope.previewVideo = function(camName, vidId) {
-                //console.log('preview');
                 $scope.previewUrl = apiService.getVideoUrl(camName, vidId, 'mp4');
-                console.log('preview', $scope.previewUrl);
+                console.log('previewVideo:', $scope.previewUrl);
             };
+
+            /*
+            $scope.$watch('selectedCamera', function () {
+                $scope.previewUrl = '';
+            });*/
+
             apiService.getAllCameras(function(data) {
                 $scope.cameras = data;
 
@@ -44,7 +50,6 @@ angular.module('myApp')
                         $scope.camerasWithoutLocation.push(val);
                     }
                 });
-                //console.log($scope.camerasWithoutLocation.length);
                 if (hasMarkers) {
                     $scope.fitMarkers();
                 }
@@ -57,7 +62,6 @@ angular.module('myApp')
                 Object.keys($scope.markers).forEach(function(k) {
                     var m = $scope.markers[k];
                     var p = L.latLng(m.lat, m.lng);
-                    console.log(p)
                     a.push(p);
                 });
                 return new L.LatLngBounds(a);
@@ -77,11 +81,9 @@ angular.module('myApp')
             };
 
             $scope.$on('leafletDirectiveMarker.click', function(event, args) {
-                //console.log(args.markerName);
                 $scope.selectedCamera = args.markerName;
             });
 
-            $scope.$watch
 
             // Date range picker
             $scope.date = {
@@ -100,11 +102,11 @@ angular.module('myApp')
             };
             //Watch for date changes
             $scope.$watch('date', function(newDate) {
-                console.log('New date set: ', newDate);
+                var b = barrier();
                 //TODO Should not rely on a constant
                 apiService.getAllMessages(1, 999, function(data) {
                     $scope.messages = data.data;
-                    processData();
+                    b();
                 }, {
                     before: $scope.date.endDate,
                     after: $scope.date.startDate
@@ -112,13 +114,27 @@ angular.module('myApp')
                 //TODO Should not rely on a constant
                 apiService.getAllVideos(1, 999, function(data) {
                     $scope.videos = data.data;
-                    processData();
+                    b();
                 }, {
                     before: $scope.date.endDate,
                     after: $scope.date.startDate
                 });
-                //processData();
+
             }, false);
+
+            function barrier() {
+                var count = 0;
+            
+                return function () {
+                    if (count == 0) {
+                        count++;
+                        return;
+                    } else {
+                        processData();
+                    }
+                }
+            }
+
 
 
             // TODO separate into two functions
@@ -135,6 +151,7 @@ angular.module('myApp')
                     camHash[v.cam] = myEntry;
 
                 });
+
                 $scope.videos.forEach(function(v) {
                     var myEntry = camHash[v.cam] || {};
                     if (myEntry.videos) {
@@ -147,21 +164,6 @@ angular.module('myApp')
                 $scope.dataHash = camHash;
 
 
-                // Set markers
-                /*
-                angular.forEach(camHash, function(value, key) {
-                    if ($scope.markers[key]) { // Only if a marker is on the map
-                        var message = 'Camera: ' + key;
-                        if (value.videos) {
-                            message += '<br>Videos: ' + value.videos.length;
-                        }
-                        if (value.messages) {
-                            message += '<br>Messages:' + value.messages.length;
-                        }
-                        $scope.markers[key].message = message;
-                    }
-                });
-                */
                 angular.forEach($scope.markers, function(value, key) {
                     var message = 'Camera: ' + key;
                     if ($scope.dataHash[key]) {
@@ -202,14 +204,11 @@ angular.module('myApp')
                     element.empty();
                     var videoBar = $('<div>').addClass('video-bar').appendTo(element);
                     
-                    console.log('activityBar', scope.selectedCamera);
-                    console.dir(scope.messages);
 
                     if (!data) return;
 
                     if (data.videos) {
                         data.videos.forEach(function (val) {
-                            console.dir(val);
                             var vidAdjStart = (new Date(val.startTime)).getTime() - startTime,
                                 vidAdjEnd = (new Date(val.endTime)).getTime() - startTime,
                                 left = (vidAdjStart / adjustedEndTime),
@@ -221,8 +220,6 @@ angular.module('myApp')
                                     width: width * 100 + '%'
                                 })
                                 .click(function () {
-                                    console.log('vidclick');
-                                    console.dir(val);
                                     scope.previewVideo(val.cam, val.id);
                                     //TODO hover, go away change
                                 })
@@ -231,7 +228,6 @@ angular.module('myApp')
                     }
                     if (data.messages) {
                         data.messages.forEach(function (val) {
-                            console.dir(val);
                             var tagAdjTime = (new Date(val.time)).getTime() - startTime,
                                 left = (tagAdjTime / adjustedEndTime),
                                 type = val.type == 'tag' ? 'tag' : 'message';
