@@ -1,3 +1,4 @@
+/* global $ */
 'use strict';
 
 angular.module('myApp')
@@ -10,10 +11,10 @@ angular.module('myApp')
             },
             template: '<span></span>',
             link: function(scope, element, attrs) {
-                var htmlString = ''; 
-                Object.keys(scope.data).forEach(function (key) {
+                var htmlString = '';
+                Object.keys(scope.data).forEach(function(key) {
                     htmlString += '<strong>' + key + '</strong>:' + scope.data[key] + '; ';
-                    
+
                 });
                 element.html(htmlString);
             }
@@ -30,21 +31,20 @@ angular.module('myApp')
             },
             template: '<div><video poster="/images/video_poster.png" width="100%" /></div>',
             link: function(scope, element, attrs) {
-                scope.$watch('src()', function (newSrc) {
-                    console.log('New video source', newSrc);
-                    if (newSrc != '') {
-                        console.log('Go!')
-                        var vid = $('<video controls autoplay/>').attr({
-                            'width': '100%',
-                            'poster': '/images/video_poster.png'
-                        });
+                scope.$watch('src()', function(newSrc) {
+                    var vid = $('<video controls autoplay/>').attr({
+                        'width': '100%',
+                        'poster': '/images/video_poster.png'
+                    });
+                    element.empty();
+                    vid.appendTo(element);
+
+                    if (newSrc !== '') {
                         var src = $('<source />').attr({
                             type: 'video/mp4',
                             src: newSrc
                         });
                         vid.append(src);
-                        element.empty();
-                        vid.appendTo(element);
                     }
                 });
             }

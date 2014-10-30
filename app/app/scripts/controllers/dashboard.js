@@ -29,14 +29,12 @@ angular.module('myApp')
                 console.log('preview clicked');
                 $scope.$digest();
             };
-            $scope.$watch('previewUrl', function (url) {
-                console.log('previewUrl changed:', url);
-            }, true);
 
-            /*
+
             $scope.$watch('selectedCamera', function () {
                 $scope.previewUrl = '';
-            });*/
+                $scope.$digest();
+            });
 
             apiService.getAllCameras(function(data) {
                 $scope.cameras = data;
