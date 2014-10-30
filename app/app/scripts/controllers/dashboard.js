@@ -1,4 +1,4 @@
-/* global moment, $ */
+/* global moment, $, L */
 'use strict';
 
 /**
@@ -13,11 +13,10 @@ angular.module('myApp')
     .controller('DashCtrl', ['$scope', 'apiService', 'leafletData', 'leafletEvents',
 
         function($scope, apiService, leafletData, leafletEvents) {
-            var hasMarkers = false;
+            var hasMarkers = false,
+                cameraNames = [];
 
             angular.extend($scope, {
-                messages: [],
-                videos: [],
                 markers: {},
                 camerasWithoutLocation: [],
                 dataHash: {},
@@ -27,8 +26,12 @@ angular.module('myApp')
 
             $scope.previewVideo = function(camName, vidId) {
                 $scope.previewUrl = apiService.getVideoUrl(camName, vidId, 'mp4');
-                console.log('previewVideo:', $scope.previewUrl);
+                console.log('preview clicked');
+                $scope.$digest();
             };
+            $scope.$watch('previewUrl', function (url) {
+                console.log('previewUrl changed:', url);
+            }, true);
 
             /*
             $scope.$watch('selectedCamera', function () {
@@ -52,6 +55,9 @@ angular.module('myApp')
                     } else {
                         $scope.camerasWithoutLocation.push(val);
                     }
+                    cameraNames.push(val.name);
+
+
                 });
                 if (hasMarkers) {
                     $scope.fitMarkers();
@@ -103,15 +109,14 @@ angular.module('myApp')
                 timePicker: true,
             };
 
-            //Watch for date changes
+            // watch for date changes
             $scope.$watch('date', function() {
                 console.log('date changes');
-                var b = barrier();
+                var barrier = dataReceptionBarrierGenerator();
 
-                //TODO Should not rely on a constant
+                //TODO should not rely on a constant
                 apiService.getAllMessages(1, 999, function(data) {
-                    $scope.messages = data.data;
-                    b();
+                    barrier.messagesReceived(data.data);
                 }, {
                     before: $scope.date.endDate,
                     after: $scope.date.startDate
@@ -119,8 +124,7 @@ angular.module('myApp')
 
                 //TODO Should not rely on a constant
                 apiService.getAllVideos(1, 999, function(data) {
-                    $scope.videos = data.data;
-                    b();
+                    barrier.videosReceived(data.data);
                 }, {
                     before: $scope.date.endDate,
                     after: $scope.date.startDate
@@ -128,47 +132,58 @@ angular.module('myApp')
 
             }, false);
 
-            function barrier() {
-                var count = 0;
+            // TODO check is received null data and avoid memory leak
+            function dataReceptionBarrierGenerator() {
+                var videos = null,
+                    messages = null;
 
-                return function() {
-                    if (count === 0) {
-                        count++;
-                        return;
-                    } else {
-                        console.log('processing data');
-                        processData();
+                return {
+                    videosReceived: function(data) {
+                        videos = data;
+                        if (messages) {
+                            processData(messages, videos);
+                        }
+                    },
+
+                    messagesReceived: function(data) {
+                        messages = data;
+                        if (videos) {
+                            processData(messages, videos);
+                        }
                     }
                 };
+
             }
 
-            // TODO separate into two functions
-            function processData() {
-                var camHash = {};
-                // { camname: { videos, messages}}
-                $scope.messages.forEach(function(v) {
-                    var myEntry = camHash[v.cam] || {};
-                    if (myEntry.messages) {
-                        myEntry.messages.push(v);
-                    } else {
-                        myEntry.messages = [v];
-                    }
-                    camHash[v.cam] = myEntry;
+            // Returns a blank camera hash given an array of camera names
+            // Format is { cam1: {messages: [], videos: []}, ...}
+            function blankHash(namesArray) {
+                var ret = {};
+                namesArray.forEach(function(name) {
+                    ret[name] = {
+                        messages: [],
+                        videos: []
+                    };
+                });
+                return ret;
+            }
 
+            // TODO better merge into barrier code
+            function processData(messages, videos) {
+                var newDataHash = blankHash(cameraNames);
+
+                // Filter messages and videos
+                messages.forEach(function(v) {
+                    newDataHash[v.cam].messages.push(v);
                 });
 
-                $scope.videos.forEach(function(v) {
-                    var myEntry = camHash[v.cam] || {};
-                    if (myEntry.videos) {
-                        myEntry.videos.push(v);
-                    } else {
-                        myEntry.videos = [v];
-                    }
-                    camHash[v.cam] = myEntry;
+                videos.forEach(function(v) {
+                    newDataHash[v.cam].videos.push(v);
                 });
-                $scope.dataHash = camHash;
 
+                $scope.dataHash = newDataHash;
 
+                // Update markers
                 angular.forEach($scope.markers, function(value, key) {
                     var message = 'Camera: ' + key;
                     if ($scope.dataHash[key]) {
@@ -186,8 +201,7 @@ angular.module('myApp')
 
         }
     ])
-    .directive('activityBar', ['apiService',
-        function(apiService) {
+    .directive('activityBar', [function() {
             return {
                 restrict: 'E',
                 replace: true,

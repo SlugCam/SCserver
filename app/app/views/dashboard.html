@@ -1,6 +1,7 @@
 
 
 <label>Time Range:</label>
+
 <input date-range-picker class="form-control date-picker" type="text" ng-model="date" options="opts" />
 
 <div id="dashboard-container">
@@ -22,8 +23,8 @@
 <h2>{{selectedCamera}}</h2>
 
 <activity-bar></activity-bar>
-
 <my-video-player my-src="previewUrl"></my-video-player>
+Selected video: {{previewUrl}}
 
 From {{date.startDate | date : 'medium' }} to {{date.endDate | date : 'medium'}}:
 <table>
