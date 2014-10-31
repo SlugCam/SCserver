@@ -33,16 +33,14 @@
     "body-parser": "^1.6.5",
     "bunyan": "^0.23.1",
     "colors": "^0.6.2",
-    "connect": "^3.1.0",
     "express": "^4.7.2",
     "fluent-ffmpeg": "^2.0.0-rc2",
-    "forever": "^0.11.1",
     "has-ansi": "^0.1.0",
     "minimist": "^0.2.0",
     "mkdirp": "^0.5.0",
     "mongoskin": "^1.4.4",
-    "serve-static": "^1.4.1",
+    "strip-ansi": "^0.3.0",
     "shelljs": "^0.3.0",
-    "strip-ansi": "^0.3.0"
+    "forever": "^0.12.0"
   }
 }

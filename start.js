@@ -15,16 +15,12 @@ var config = require('./config'),
     fs = require('fs'),
     // Libraries
     argv = require('minimist')(process.argv.slice(2)), // parse argv using minimist
-    bunyan = require('bunyan'),
-    serveStatic = require('serve-static'),
-    connect = require('connect');
+    bunyan = require('bunyan');
 
 // Message
 // -------
-console.log('SlugCam');
-console.log('=======');
-console.log('Note, this start script also starts a static server for the angular app.');
-console.log('To build the app go to the app directory and run `grunt build`.');
+console.log('SlugCam Network Package (SCnet)');
+console.log('===============================');
 console.log('\nNote that this app is dependent on ffmpeg (tested v2.2) and mongod (tested v2.6.1)');
 console.log('Errors have been encountered using older versions of these packages (which are still in some package managers).');
 
@@ -85,24 +81,3 @@ require('./servers/lib/db').setConfig(config, sweetLog('dataLib'));
 messageServer.listen(config.messageServer.port, sweetLog('messageServer'));
 apiServer.listen(config.apiServer.port, sweetLog('apiServer'), config.videoServer.path);
 videoServer.listen(config.videoServer.port, sweetLog('videoServer'), config.videoServer.path);
-
-// ### Serve the web app
-
-// To serve the web app we just create a simple static server using the connect
-// library that points at the root of the application code
-var staticLog = sweetLog('appServer');
-
-var app = connect();
-app.use(function(req, res, next) {
-    staticLog.trace('%s %s "%s"', req.method, req.url, req.headers['user-agent']);
-    res.on('finish', function() {
-        staticLog.trace('response finish');
-    });
-    next();
-});
-
-app.use(serveStatic('app/dist', {
-    'index': ['index.html', 'index.htm']
-}));
-app.listen(8000);
-staticLog.info('server bound to port ' + 8000);
