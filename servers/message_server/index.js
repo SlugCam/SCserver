@@ -37,7 +37,11 @@ var server = net.createServer(function(c) { // 'connection' listener
             log.trace(data);
             // TODO throw error if no time
             if (data.time) {
-                data.time = new Date(data.time * 1000);
+                if (typeof foo === "number") {
+                    data.time = new Date(data.time * 1000);
+                } else {
+                    data.time = new Date(data.time);
+                }
             }
             db.storeMessage(data);
 
@@ -75,4 +79,3 @@ exports.listen = function(port, logger) {
         log.info('server bound to port ' + port);
     });
 };
-
