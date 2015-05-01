@@ -1,20 +1,14 @@
-# SWEETnet
+# SCserver
 
-The network software behind the SWEETcam system.
-
-## Todo
-
-Remove local bower dependency from app directory.
+The server software behind the SlugCam system.
 
 ## Usage
 
 ## Configuration
 
-Configuration files must be created before use. There are **two** configuration
-files that need to be created.
+Configuration files must be created before use.
 
 1. :/config.js - the main project configuration file
-2. :/app/app/scripts/config.js - the web app configuration file
 
 In both cases example configuration files are provided in the same directory
 named config.js.example. Configuration files are not checked in, this way
